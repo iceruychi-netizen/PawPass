@@ -113,3 +113,4 @@ Test giao diện kiểm tra toàn bộ luồng chính, không có lỗi console 
 - Tài liệu tối đa 4 MB do Vercel giới hạn request ở 4,5 MB.
 - Ảnh thú cưng và ảnh đại diện nằm ở URL Blob công khai nhưng khó đoán. Tài liệu thì luôn đi qua API có kiểm tra quyền.
 - Tìm kiếm lọc phía client trên dữ liệu đã tải, phù hợp quy mô dữ liệu của một người dùng.
+- deploy
