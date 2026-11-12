@@ -6,7 +6,7 @@
  */
 const db = require('./db');
 const storage = require('./storage');
-const { hashPassword, verifyPassword, signToken, verifyToken } = require('./security');
+const { hashPassword, verifyPassword, signToken, verifyToken, assertConfigured } = require('./security');
 const { HttpError, fail, invalid, send, readJson, readMultipart, createRouter } = require('./http');
 const VAL = require('../public/js/validators');
 
@@ -264,6 +264,7 @@ async function handle(req, res) {
   const url = new URL(req.url, 'http://localhost');
   const path = url.pathname.replace(/^\/api(?=\/|$)/, '') || '/';
   try {
+    assertConfigured(); // fail fast with a clear message instead of half-completing a request
     const hit = router.match(req.method, path);
     if (!hit) throw fail(404, 'Không tìm thấy endpoint.');
     if (hit.notAllowed) throw fail(405, 'Phương thức không được hỗ trợ.');
@@ -292,9 +293,12 @@ async function handle(req, res) {
       return;
     }
     if (err && err.code === '23505') { send(res, 409, { error: EMAIL_USED, errors: { email: EMAIL_USED } }); return; }
-    console.error('[api]', req.method, path, err);
-    const dbDown = err && (err.code === 'ECONNREFUSED' || /DATABASE_URL|connect/i.test(String(err.message)));
-    send(res, 500, { error: dbDown ? 'Không kết nối được cơ sở dữ liệu. Vui lòng thử lại sau.' : 'Lỗi máy chủ. Vui lòng thử lại.' });
+    console.error('[api]', req.method, path, (err && err.code) || '', err);
+    let message = 'Lỗi máy chủ. Vui lòng thử lại.';
+    if (err && err.code === 'PAWPASS_NO_DB_URL') message = 'Máy chủ chưa được cấu hình cơ sở dữ liệu (thiếu DATABASE_URL).';
+    else if (err && err.code === 'PAWPASS_NO_JWT') message = 'Máy chủ chưa được cấu hình JWT_SECRET.';
+    else if (db.isConnectionError(err)) message = 'Không kết nối được cơ sở dữ liệu. Vui lòng thử lại sau.';
+    send(res, 500, { error: message });
   }
 }
 

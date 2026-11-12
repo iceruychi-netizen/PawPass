@@ -2,7 +2,7 @@
 body{margin:0;background:#FBF1DF}
 *{box-sizing:border-box}
 a{color:#A85A14}a:hover{color:#7E420C}
-.pp{font-family:'Nunito',system-ui,sans-serif;color:#3A2E28;font-size:15px;line-height:1.5;font-weight:600;min-height:100vh;display:flex;flex-direction:column;background:#FBF1DF}
+.pp{font-family:'Nunito',system-ui,sans-serif;color:#3A2E28;font-size:15px;line-height:1.5;font-weight:600;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;background:#FBF1DF}
 .scroller{flex:1 0 auto;min-width:0}
 html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .pp{overflow-x:hidden;overflow-x:clip;max-width:100vw;touch-action:pan-y pinch-zoom}
@@ -446,7 +446,7 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 .page .h1{font-size:clamp(22px,3.6vh,28px)!important}
 @media (max-height:880px){.welcome{display:none}}
 @media (max-height:760px){.page .hint{display:none}.stk-sub{display:none}}
-@media (max-width:760px){.auth{min-height:100vh;padding:10px 12px;gap:6px;align-content:flex-start}.auth-copy{flex-basis:100%;gap:0;align-items:center;text-align:center}.auth-copy .h1,.stickers,.welcome{display:none}.cover-wrap{padding-top:44px}.peek{transform:translateX(-50%) scale(.72)}.cover{padding:8px;border-radius:22px}.cover-in{padding:10px 8px 8px;gap:8px}.cover-title b{font-size:13px}}
+@media (max-width:760px){.auth{min-height:100vh;min-height:100svh;padding:10px 12px;gap:6px;align-content:flex-start}.auth-copy{flex-basis:100%;gap:0;align-items:center;text-align:center}.auth-copy .h1,.stickers,.welcome{display:none}.cover-wrap{padding-top:44px}.peek{transform:translateX(-50%) scale(.72)}.cover{padding:8px;border-radius:22px}.cover-in{padding:10px 8px 8px;gap:8px}.cover-title b{font-size:13px}}
 @media (max-width:760px),(max-height:720px){.yard{flex-basis:62px}.critter svg{width:56px;height:auto}.mover{bottom:12px}}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .sec-head p{margin:0}
@@ -454,13 +454,13 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 /* the yard: pets walking along the bottom edge — decorative, never over content */
 .yard{position:relative;flex:0 0 126px;pointer-events:none;z-index:40}
 .ground{position:absolute;left:0;right:0;bottom:0;height:18px;background:#E9D3AE;border-top:2.5px solid #3A2E28}
-.mover{position:absolute;bottom:14px;left:-100px;animation:pp-walk linear infinite}
+.mover{position:absolute;bottom:14px;left:0;transform:translate3d(-100px,0,0);will-change:transform;animation:pp-walk linear infinite}
 .flipper{animation:pp-flip linear infinite}
 .m1,.m1 .flipper{animation-duration:46s;animation-delay:-4s}
 .m2,.m2 .flipper{animation-duration:64s;animation-delay:-38s}
 .m3,.m3 .flipper{animation-duration:36s;animation-delay:-20s}
 .mover:hover,.mover:hover *,.mover:focus-within,.mover:focus-within *{animation-play-state:paused}
-@keyframes pp-walk{0%{left:-100px}50%{left:calc(100% + 10px)}100%{left:-100px}}
+@keyframes pp-walk{0%{transform:translate3d(-100px,0,0)}50%{transform:translate3d(calc(100vw + 10px),0,0)}100%{transform:translate3d(-100px,0,0)}}
 @keyframes pp-flip{0%,49.9%{transform:scaleX(1)}50%,100%{transform:scaleX(-1)}}
 .critter{pointer-events:auto;display:block;background:none;border:0;padding:0;cursor:pointer;min-height:44px}
 .critter svg{display:block;animation:pp-bob .45s ease-in-out infinite alternate}

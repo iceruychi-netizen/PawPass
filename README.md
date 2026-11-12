@@ -24,10 +24,11 @@ pawpass/
 │   ├── js/validators.js    # quy tắc validation dùng chung client + server
 │   └── assets/             # hình minh họa chó mèo
 ├── db/schema.sql           # 5 bảng theo ERD
-├── scripts/migrate.js      # tạo bảng
+├── server/schema.js        # cùng SQL, API tự áp dụng khi chạy lần đầu
+├── scripts/migrate.js      # tạo bảng thủ công (tùy chọn)
 ├── scripts/seed.js         # (tùy chọn) tài khoản demo
 ├── scripts/psql-driver.js  # chỉ dùng khi test offline, không dùng production
-├── tests/api.test.js       # 36 test API trên PostgreSQL thật
+├── tests/api.test.js       # 38 test API trên PostgreSQL thật
 ├── tests/ui/run-ui.js      # test giao diện end-to-end bằng Playwright
 ├── vercel.json
 └── .env.example
@@ -50,18 +51,23 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 
 ## Deploy lên Vercel
 
-1. Đẩy thư mục này lên một repo GitHub, rồi trên Vercel chọn **Add New → Project** và import repo đó. Framework Preset để **Other**, không cần Build Command.
-2. Tạo database: trong project chọn **Storage → Create → Neon (Postgres)** rồi gắn vào project. Vercel tự thêm `DATABASE_URL`.
-3. Tạo kho file: **Storage → Create → Blob** rồi gắn vào project. Vercel tự thêm `BLOB_READ_WRITE_TOKEN`.
-4. Vào **Settings → Environment Variables**, thêm `JWT_SECRET`.
-5. Tạo bảng (chạy một lần từ máy bạn, dùng đúng `DATABASE_URL` của Neon):
-   ```bash
-   npm install
-   DATABASE_URL="postgres://..." npm run db:migrate
-   DATABASE_URL="postgres://..." npm run db:seed   # tùy chọn: demo@pawpass.vn / 123456
-   ```
-   Có thể dán nội dung `db/schema.sql` vào SQL Editor của Neon thay cho lệnh migrate.
-6. Bấm **Redeploy**. Mở link Vercel và đăng ký tài khoản.
+1. Import repo GitHub vào Vercel (**Add New → Project**). Framework Preset để **Other**, không cần Build Command.
+2. **Storage → Create Database → Neon (Postgres)** rồi bấm **Connect Project** và chọn cả 3 môi trường. Vercel tự thêm biến `DATABASE_URL`.
+   Code cũng nhận `POSTGRES_URL` và biến có tiền tố riêng (vd. `STORAGE_DATABASE_URL`).
+3. **Storage → Create → Blob** rồi **Connect Project**. Vercel tự thêm `BLOB_READ_WRITE_TOKEN`.
+4. **Settings → Environment Variables**: thêm `JWT_SECRET` (chuỗi ngẫu nhiên tối thiểu 32 ký tự) cho cả 3 môi trường.
+5. **Deployments → ⋯ → Redeploy**. Biến môi trường chỉ có hiệu lực ở lần deploy *sau* khi thêm.
+
+Không cần tự tạo bảng: API tạo bảng (`CREATE TABLE IF NOT EXISTS`) ở request đầu tiên.
+Muốn tạo tài khoản demo thì chạy `DATABASE_URL="postgres://..." npm run db:seed` từ máy bạn.
+
+### Khi gặp lỗi
+
+| Thông báo trên web | Nguyên nhân | Cách sửa |
+| --- | --- | --- |
+| Máy chủ chưa được cấu hình cơ sở dữ liệu | Không có `DATABASE_URL` | Làm lại bước 2, rồi Redeploy |
+| Máy chủ chưa được cấu hình JWT_SECRET | Thiếu hoặc ngắn hơn 32 ký tự | Làm lại bước 4, rồi Redeploy |
+| Không kết nối được cơ sở dữ liệu | Sai chuỗi kết nối, DB bị xóa/tạm dừng | Kiểm tra Neon dashboard; xem log ở **Deployments → Functions/Logs** (dòng `[api] … `) |
 
 ## Chạy local
 
@@ -71,7 +77,7 @@ Cần Node.js 20+ và PostgreSQL 14+.
 npm install
 cp .env.example .env            # sửa DATABASE_URL và JWT_SECRET
 createdb pawpass                # hoặc tạo database bằng công cụ bạn dùng
-npm run db:migrate
+npm run db:migrate              # tùy chọn: API cũng tự tạo bảng
 npm run db:seed                 # tùy chọn
 npm run dev                     # http://localhost:3000 (frontend + backend cùng một lệnh)
 ```
@@ -82,7 +88,7 @@ Frontend là file tĩnh nên không có lệnh riêng: `npm run dev` phục vụ
 
 ```bash
 createdb pawpass_test
-TEST_DATABASE_URL=postgres://user:pass@localhost:5432/pawpass_test npm test   # 36 test API
+TEST_DATABASE_URL=postgres://user:pass@localhost:5432/pawpass_test npm test   # 38 test API
 
 npm i -D playwright && npx playwright install chromium
 npm run dev &                                                              # cần tài khoản demo (npm run db:seed)

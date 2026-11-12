@@ -1,0 +1,5 @@
+node_modules/
+.env
+uploads/
+.vercel/
+tests/ui/output/

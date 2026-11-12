@@ -32,7 +32,7 @@ async function verifyPassword(password, stored) {
 
 function secret() {
   const s = process.env.JWT_SECRET;
-  if (!s || s.length < 32) throw new Error('JWT_SECRET must be set (at least 32 characters)');
+  if (!s || s.length < 32) { const e = new Error('JWT_SECRET must be set (at least 32 characters)'); e.code = 'PAWPASS_NO_JWT'; throw e; }
   return s;
 }
 const b64url = (buf) => Buffer.from(buf).toString('base64').replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
@@ -63,4 +63,4 @@ function verifyToken(token) {
   } catch (e) { return null; }
 }
 
-module.exports = { hashPassword, verifyPassword, signToken, verifyToken, TOKEN_TTL_SECONDS };
+module.exports = { hashPassword, verifyPassword, signToken, verifyToken, assertConfigured: secret, TOKEN_TTL_SECONDS };

@@ -45,8 +45,6 @@ function fileForm(buf, name, type, description) {
 const today = () => new Date().toISOString().slice(0, 10);
 
 test.before(async () => {
-  const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
-  await db.query(sql);
   await db.query('TRUNCATE users, pets, health_records, vaccinations, documents RESTART IDENTITY CASCADE');
   server = http.createServer(handle);
   await new Promise((r) => server.listen(0, r));
@@ -302,4 +300,31 @@ test('Errors: unknown endpoint 404, wrong method 405, bad JSON 400', async () =>
   assert.equal((await call('PATCH', '/pets', { token: S.tokenA, body: {} })).status, 405);
   const r = await fetch(base + '/pets', { method: 'POST', headers: { Authorization: 'Bearer ' + S.tokenA, 'Content-Type': 'application/json' }, body: '{bad' });
   assert.equal(r.status, 400);
+});
+
+test('Configuration: schema module matches db/schema.sql, clear config errors', async () => {
+  const file = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
+  assert.equal(require('../server/schema'), file);
+  const saved = process.env.JWT_SECRET;
+  delete process.env.JWT_SECRET;
+  const r = await call('POST', '/auth/register', { body: { name: 'X', email: 'x@example.com', password: 'secret123' } });
+  process.env.JWT_SECRET = saved;
+  assert.equal(r.status, 500);
+  assert.match(r.data.error, /JWT_SECRET/);
+  assert.equal(await db.one("SELECT id FROM users WHERE email = 'x@example.com'"), null, 'nothing written');
+});
+
+test('Configuration: connection string fallbacks used by Vercel integrations', () => {
+  const keep = Object.assign({}, process.env);
+  try {
+    delete process.env.DATABASE_URL;
+    process.env.POSTGRES_URL = 'postgres://a@b/c';
+    assert.equal(db.connectionString(), 'postgres://a@b/c');
+    delete process.env.POSTGRES_URL;
+    process.env.STORAGE_DATABASE_URL = 'postgresql://d@e/f';
+    assert.equal(db.connectionString(), 'postgresql://d@e/f');
+  } finally {
+    Object.keys(process.env).forEach((k) => { if (!(k in keep)) delete process.env[k]; });
+    Object.assign(process.env, keep);
+  }
 });
