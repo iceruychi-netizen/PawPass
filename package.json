@@ -1,0 +1,22 @@
+{
+  "name": "pawpass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PawPass — sổ hộ chiếu thú cưng: hồ sơ, sức khỏe, tiêm phòng, tài liệu.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node server/local.js",
+    "start": "node server/local.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "test:ui": "node tests/ui/run-ui.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.27.3",
+    "pg": "^8.13.1"
+  }
+}

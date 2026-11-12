@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PawPass — Sổ hộ chiếu thú cưng</title>
+<meta name="description" content="PawPass — quản lý hồ sơ, sức khỏe, tiêm phòng và giấy tờ của thú cưng.">
+<link rel="icon" href="/assets/0aac20424488808bb687fe0bf895c0a7.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div id="app"></div>
+<noscript>PawPass cần bật JavaScript để hoạt động.</noscript>
+
+<!-- UI template carried over from the approved Step 1 prototype (rendered by js/runtime.js). -->
+<template id="pp-template">
+<div class="pp">
+
+<sc-if value="{{busy}}" hint-placeholder-val="{{ false }}"><div class="bar" role="progressbar" aria-label="Đang tải"></div></sc-if>
+<div class="scroller">
+
+<!-- ================= AUTH ================= -->
+<sc-if value="{{scr.auth}}" hint-placeholder-val="{{ true }}">
+<div class="auth">
+  <section class="auth-copy">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:46px;height:46px;border-radius:16px;background:#F2A541;border:2.5px solid #3A2E28;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #3A2E28">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#3A2E28" aria-hidden="true"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"></ellipse><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"></ellipse><path d="M12 11c-3 0-6.2 3.6-6.2 6.3 0 1.8 1.4 2.9 3 2.9 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-1.1 3-2.9C18.2 14.6 15 11 12 11z"></path></svg>
+      </span>
+      <span class="brand" style="font-size:28px;font-weight:800">PawPass</span>
+    </div>
+    <div>
+      <p class="hand greet" style="font-size:26px">xin chào, người nuôi thú cưng!</p>
+      <h1 class="h1" style="font-size:clamp(32px,4.2vw,44px);margin-top:4px">Mỗi bé có một cuốn sổ riêng.</h1>
+    </div>
+    <div class="stickers">
+      <div class="stk stk-1">
+        <div class="stk-art" aria-hidden="true">
+          <img class="stkcat" src="/assets/0aac20424488808bb687fe0bf895c0a7.png" alt="" width="58" height="42" style="width:58px;height:auto">
+          <span class="bars"><i style="width:90%"></i><i style="width:70%"></i><i style="width:80%"></i></span>
+        </div>
+        <span class="stk-cap">Hồ sơ từng bé</span>
+        <span class="stk-sub">Ảnh, loài, giống, cân nặng</span>
+      </div>
+      <div class="stk stk-2">
+        <div class="stk-art" aria-hidden="true"><span class="minist"><span>ĐÃ TIÊM</span><span style="font-size:13px">Mũi 2</span></span></div>
+        <span class="stk-cap">Khám &amp; tiêm chủng</span>
+        <span class="stk-sub">Mỗi mũi là một con dấu</span>
+      </div>
+      <div class="stk stk-3">
+        <div class="stk-art" aria-hidden="true" style="background:#fff">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="#3A2E28"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"></ellipse><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"></ellipse><path d="M12 11c-3 0-6.2 3.6-6.2 6.3 0 1.8 1.4 2.9 3 2.9 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-1.1 3-2.9C18.2 14.6 15 11 12 11z"></path></svg>
+          <span class="tag t-pink">PDF</span>
+        </div>
+        <span class="stk-cap">Giấy tờ</span>
+        <span class="stk-sub">JPG, PNG, PDF — tìm lại trong vài giây</span>
+      </div>
+    </div>
+    <div class="welcome hide-sm" aria-hidden="true"><img class="wdog" src="/assets/32a20f51c5b0015abaaeb38b6cb7d81e.png" alt=""><span class="rig wavecat"><img class="rp rp-tail" src="/assets/4a42cfb3bb6bc9f052f88649768da6cd.png" alt=""><img class="rp rp-body" src="/assets/007cdd15ec302769ce9a82fa462e75e7.png" alt=""><img class="rp rp-legL" src="/assets/8475cc7b850252a4518883a6b1425683.png" alt=""><img class="rp rp-legR" src="/assets/cbb2c2516681a093d8c332b015c77ec6.png" alt=""><img class="rp rp-arm" src="/assets/6bf23b2723dce08abf9942318fb082b4.png" alt=""></span>
+      <svg width="250" height="104" viewBox="0 0 250 104">
+        <g stroke="#3A2E28" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 100 H242" fill="none"></path>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <div class="cover-wrap">
+    <div class="peek peek-imgs" aria-hidden="true"><img src="/assets/0aac20424488808bb687fe0bf895c0a7.png" alt="" width="186" height="136"><img src="/assets/340faf1d5e7b89f669fc952729e58a6d.png" alt="" width="186" height="136"></div>
+    <section class="cover">
+      <div class="cover-in">
+        <div class="cover-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3A2E28" aria-hidden="true"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"></ellipse><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"></ellipse><path d="M12 11c-3 0-6.2 3.6-6.2 6.3 0 1.8 1.4 2.9 3 2.9 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-1.1 3-2.9C18.2 14.6 15 11 12 11z"></path></svg>
+          <b>Hộ chiếu thú cưng</b>
+        </div>
+        <div class="page">
+    <sc-if value="{{scr.login}}" hint-placeholder-val="{{ true }}">
+    <div>
+      <h2 class="h1" style="font-size:28px">Đăng nhập</h2>
+      <p class="muted" style="margin:4px 0 0">Mở lại sổ của các bé.</p>
+    </div>
+    <div onKeyDown="{{H.keyLogin}}" style="display:flex;flex-direction:column;gap:16px">
+      <sc-if value="{{formError}}" hint-placeholder-val="{{ false }}"><div role="alert" class="tag t-red" style="height:auto;padding:10px 14px;border-radius:14px;font-size:14px;white-space:normal">{{formError}}</div></sc-if>
+      <div>
+        <label class="lbl" for="lg-email">Email <span class="req">*</span></label>
+        <input id="lg-email" class="{{cls.email}}" type="text" inputmode="email" autocomplete="email" value="{{f.email}}" onChange="{{H.on.email}}" placeholder="ban@email.com">
+        <sc-if value="{{err.email}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.email}}</p></sc-if>
+      </div>
+      <div>
+        <label class="lbl" for="lg-pass">Mật khẩu <span class="req">*</span></label>
+        <input id="lg-pass" class="{{cls.password}}" type="password" autocomplete="current-password" value="{{f.password}}" onChange="{{H.on.password}}">
+        <sc-if value="{{err.password}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.password}}</p></sc-if>
+      </div>
+      <button type="button" class="btn btn-p" disabled="{{saving}}" style="width:100%" onClick="{{H.submitLogin}}">{{loginLabel}}</button>
+    </div>
+    <p style="margin:0;font-size:14px;text-align:center" class="muted">Chưa có tài khoản? <button type="button" class="plain" onClick="{{H.goRegister}}" style="color:#A85A14;font-weight:800;min-height:0;text-decoration:underline">Đăng ký ngay</button></p>
+    </sc-if>
+
+    <sc-if value="{{scr.register}}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h2 class="h1" style="font-size:28px">Tạo tài khoản</h2>
+      <p class="muted" style="margin:4px 0 0">Bắt đầu sổ hộ chiếu cho các bé.</p>
+    </div>
+    <div onKeyDown="{{H.keyRegister}}" style="display:flex;flex-direction:column;gap:16px">
+      <sc-if value="{{formError}}" hint-placeholder-val="{{ false }}"><div role="alert" class="tag t-red" style="height:auto;padding:10px 14px;border-radius:14px;font-size:14px;white-space:normal">{{formError}}</div></sc-if>
+      <div>
+        <label class="lbl" for="rg-name">Họ và tên <span class="req">*</span></label>
+        <input id="rg-name" class="{{cls.name}}" type="text" autocomplete="name" value="{{f.name}}" onChange="{{H.on.name}}">
+        <sc-if value="{{err.name}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.name}}</p></sc-if>
+      </div>
+      <div>
+        <label class="lbl" for="rg-email">Email <span class="req">*</span></label>
+        <input id="rg-email" class="{{cls.email}}" type="text" inputmode="email" autocomplete="email" value="{{f.email}}" onChange="{{H.on.email}}">
+        <sc-if value="{{err.email}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.email}}</p></sc-if>
+      </div>
+      <div>
+        <label class="lbl" for="rg-pass">Mật khẩu <span class="req">*</span></label>
+        <input id="rg-pass" class="{{cls.password}}" type="password" autocomplete="new-password" value="{{f.password}}" onChange="{{H.on.password}}">
+        <sc-if value="{{err.password}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.password}}</p></sc-if>
+        <sc-if value="{{noErr.password}}" hint-placeholder-val="{{ true }}"><p class="hint">Tối thiểu 6 ký tự.</p></sc-if>
+      </div>
+      <div>
+        <label class="lbl" for="rg-confirm">Nhập lại mật khẩu <span class="req">*</span></label>
+        <input id="rg-confirm" class="{{cls.confirm}}" type="password" autocomplete="new-password" value="{{f.confirm}}" onChange="{{H.on.confirm}}">
+        <sc-if value="{{err.confirm}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.confirm}}</p></sc-if>
+      </div>
+      <button type="button" class="btn btn-p" disabled="{{saving}}" style="width:100%" onClick="{{H.submitRegister}}">{{registerLabel}}</button>
+    </div>
+    <p style="margin:0;font-size:14px;text-align:center" class="muted">Đã có tài khoản? <button type="button" class="plain" onClick="{{H.goLogin}}" style="color:#A85A14;font-weight:800;min-height:0;text-decoration:underline">Đăng nhập</button></p>
+    </sc-if>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= APP ================= -->
+<sc-if value="{{scr.app}}" hint-placeholder-val="{{ false }}">
+<div class="game">
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="logo">
+      <span style="width:40px;height:40px;border-radius:14px;background:#FFFCF5;border:2.5px solid #3A2E28;display:inline-flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3A2E28" aria-hidden="true"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"></ellipse><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"></ellipse><path d="M12 11c-3 0-6.2 3.6-6.2 6.3 0 1.8 1.4 2.9 3 2.9 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-1.1 3-2.9C18.2 14.6 15 11 12 11z"></path></svg>
+      </span>
+      <span class="brand" style="font-size:24px;font-weight:800">PawPass</span>
+    </div>
+    <nav aria-label="Điều hướng chính" class="tnavs">
+      <button type="button" class="{{nav.dashboard}}" onClick="{{H.navDash}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg>Trang chủ</button>
+      <button type="button" class="{{nav.pets}}" onClick="{{H.navPets}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"></circle><circle cx="10" cy="5.5" r="2"></circle><circle cx="14" cy="5.5" r="2"></circle><circle cx="18" cy="10" r="2"></circle><path d="M12 12c-3 0-5.5 3.3-5.5 5.6 0 1.5 1.2 2.4 2.6 2.4 1.2 0 1.8-.5 2.9-.5s1.7.5 2.9.5c1.4 0 2.6-.9 2.6-2.4 0-2.3-2.5-5.6-5.5-5.6z"></path></svg>Thú cưng</button>
+      <button type="button" class="{{nav.search}}" onClick="{{H.navSearch}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>Tìm kiếm</button>
+      <button type="button" class="{{nav.account}}" onClick="{{H.navAccount}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path></svg>Tài khoản</button>
+    </nav>
+    <div class="who">
+      <sc-if value="{{meHasAvatar}}" hint-placeholder-val="{{ false }}"><img class="ava" src="{{me.avatar}}" alt="" style="width:38px;height:38px"></sc-if>
+      <sc-if value="{{meNoAvatar}}" hint-placeholder-val="{{ true }}"><span class="ava" aria-hidden="true" style="width:38px;height:38px;font-size:14px;background:#FCE3E8">{{meInitials}}</span></sc-if>
+      <span class="who-name" style="font-weight:800;font-size:14px;white-space:nowrap">{{me.name}}</span>
+      <button type="button" class="btn btn-sm icon-btn" style="box-shadow:none" onClick="{{H.logout}}" aria-label="Đăng xuất" title="Đăng xuất"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H5v16h4"></path><path d="M14 8l4 4-4 4"></path><path d="M18 12H9"></path></svg></button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ---------- TRANG CHỦ ---------- -->
+  <sc-if value="{{pg.dashboard}}" hint-placeholder-val="{{ true }}">
+  <div class="wrap">
+    <div class="hud">
+      <div class="hud-hello">
+        <p class="hand greet">{{greeting}}</p>
+        <h1 class="h1">Sổ hộ chiếu của các bé</h1>
+      </div>
+      <div class="hud-res" role="list" aria-label="Tổng số trong sổ">
+        <div class="res" role="listitem"><span class="res-ico" style="background:#FFB347" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"></ellipse><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"></ellipse><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"></ellipse><path d="M12 11c-3 0-6.2 3.6-6.2 6.3 0 1.8 1.4 2.9 3 2.9 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-1.1 3-2.9C18.2 14.6 15 11 12 11z"></path></svg></span><b>{{tally.pets}}</b><span>bé</span></div>
+        <div class="res" role="listitem"><span class="res-ico" style="background:#7BD389" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"></path></svg></span><b>{{tally.health}}</b><span>lần khám</span></div>
+        <div class="res" role="listitem"><span class="res-ico" style="background:#7FB8F0" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3l3 3M19.5 4.5L15 9M16 8l-9 9H4v-3l9-9z"></path></svg></span><b>{{tally.vacc}}</b><span>mũi tiêm</span></div>
+        <div class="res" role="listitem"><span class="res-ico" style="background:#F59AB5" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h8l5 5v15H6z"></path></svg></span><b>{{tally.docs}}</b><span>tài liệu</span></div>
+      </div>
+    </div>
+
+    <sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
+      <div class="card empty" role="status"><span class="hand" style="font-size:20px">Đang gọi các bé về…</span></div>
+    </sc-if>
+
+    <sc-if value="{{loaded}}" hint-placeholder-val="{{ true }}">
+    <div class="home">
+      <section class="plist" aria-labelledby="pp-mine">
+        <div class="sec-head">
+          <h2 id="pp-mine" class="h2">Các bé của bạn</h2>
+          <p class="muted small">Bấm vào một cuốn sổ để xem chi tiết</p>
+        </div>
+        <sc-for list="{{pv}}" as="p" hint-placeholder-count="3">
+          <button type="button" class="passport" onClick="{{p.open}}" aria-label="Mở sổ của {{p.name}}">
+            <span class="pp-photo" style="background: {{p.bg}}">
+              <sc-if value="{{p.hasPhoto}}" hint-placeholder-val="{{ false }}"><img class="face" src="{{p.photo}}" alt="" style="width:84px;height:84px"></sc-if>
+              <sc-if value="{{p.hasIllus}}" hint-placeholder-val="{{ false }}"><img class="face illus" src="{{p.illus}}" alt="" style="width:84px;height:84px"></sc-if>
+              <sc-if value="{{p.noPhoto}}" hint-placeholder-val="{{ true }}"><span class="face" aria-hidden="true" style="width:84px;height:84px;font-size:38px">{{p.initials}}</span></sc-if>
+            </span>
+            <span class="pp-body">
+              <span style="display:flex;flex-direction:column">
+                <span class="pp-name">{{p.name}}</span>
+                <span class="muted" style="font-size:14px;font-weight:700">{{p.species}} · {{p.breedText}} · {{p.gender}}</span>
+              </span>
+              <span class="pp-fields">
+                <span class="pp-f"><span>Tuổi</span><b>{{p.ageText}}</b></span>
+                <span class="pp-f"><span>Cân nặng</span><b>{{p.weightText}}</b></span>
+                <span class="pp-f"><span>Tiêm chủng</span><b>{{p.vaccSummary}}</b></span>
+              </span>
+              <span class="pp-foot"><span>Khám gần nhất: <b>{{p.lastExamShort}}</b></span><span>Tài liệu: <b>{{p.nDocs}}</b></span></span>
+            </span>
+          </button>
+        </sc-for>
+        <button type="button" class="add-tile" onClick="{{H.addPet}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Thêm một bé mới</button>
+      </section>
+
+      <div class="side-col">
+      <aside class="notepad" aria-label="Cần để ý">
+        <button type="button" class="sleeper" onClick="{{H.pokeSleeper}}" aria-label="Chú mèo đang ngủ — bấm để đánh thức">
+          <sc-if value="{{sleeper.awake}}" hint-placeholder-val="{{ false }}"><span class="bubble" style="bottom:auto;top:-36px;left:30%">{{sleeper.line}}</span></sc-if>
+          <sc-if value="{{sleeper.asleep}}" hint-placeholder-val="{{ true }}"><span class="rig sleep"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.png" alt=""><img class="rp rp-body" src="/assets/4c178692906419cbb35abc276342e455.png" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.png" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.png" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.png" alt=""></span></sc-if>
+          <sc-if value="{{sleeper.awake}}" hint-placeholder-val="{{ false }}"><span class="rig sleep awake"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.png" alt=""><img class="rp rp-body" src="/assets/247084d3c08a6eef1fa33e13fe06be0e.png" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.png" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.png" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.png" alt=""></span></sc-if>
+          <sc-if value="{{sleeper.asleep}}" hint-placeholder-val="{{ true }}"><span class="zz" aria-hidden="true" style="position:absolute;left:4px;top:-6px">z z</span></sc-if>
+        </button>
+
+        <div class="np-head">
+          <span class="np-ico" style="background:#FCE3E0" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3A2E28" stroke-width="2.6" stroke-linecap="round"><path d="M12 7v6"></path><circle cx="12" cy="17" r="1.2" fill="#3A2E28"></circle><path d="M10.3 3.8L2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0z"></path></svg></span>
+          <div><h2 class="h2">Cần để ý</h2><p class="muted small" style="margin:0">Thuốc đang dùng, lưu ý và mũi tiêm còn thiếu</p></div>
+        </div>
+        <sc-if value="{{noWatch}}" hint-placeholder-val="{{ false }}"><p style="margin:0" class="muted">Mọi thứ đều ổn. Các bé khỏe re!</p></sc-if>
+        <div class="np-list">
+          <sc-for list="{{watchGroups}}" as="g" hint-placeholder-count="3">
+            <button type="button" class="np-group" onClick="{{g.go}}" aria-label="Mở sổ của {{g.pet}}">
+              <span class="np-pet"><sc-if value="{{g.hasPhoto}}" hint-placeholder-val="{{ false }}"><img class="ava" src="{{g.photo}}" alt="" style="width:34px;height:34px;border-width:2px"></sc-if><sc-if value="{{g.hasIllus}}" hint-placeholder-val="{{ false }}"><img class="ava illus" src="{{g.illus}}" alt="" style="width:34px;height:34px;border-width:2px"></sc-if><sc-if value="{{g.noPhoto}}" hint-placeholder-val="{{ true }}"><span class="ava" aria-hidden="true" style="width:34px;height:34px;font-size:14px;border-width:2px;background: {{g.bg}}">{{g.initials}}</span></sc-if>{{g.pet}}</span>
+              <sc-for list="{{g.lines}}" as="l" hint-placeholder-count="2">
+                <span class="np-line"><span class="{{l.cls}}">{{l.label}}</span><span class="np-text">{{l.text}}</span></span>
+              </sc-for>
+            </button>
+          </sc-for>
+        </div>
+      </aside>
+
+      <aside class="card np-card" aria-label="Thay đổi gần đây">
+        <div class="np-head">
+          <span class="np-ico" style="background:#D9E8F5" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3A2E28" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+          <div><h2 class="h2">Gần đây</h2><p class="muted small" style="margin:0">5 thay đổi mới nhất trong sổ</p></div>
+        </div>
+        <sc-if value="{{noActs}}" hint-placeholder-val="{{ false }}"><p style="margin:0" class="muted">Chưa có hoạt động nào.</p></sc-if>
+        <div class="np-list">
+          <sc-for list="{{acts}}" as="a" hint-placeholder-count="5">
+            <button type="button" class="np-act" onClick="{{a.go}}">
+              <span class="{{a.kcls}}">{{a.kind}}</span>
+              <span style="min-width:0;display:flex;flex-direction:column">
+                <span class="np-text">{{a.title}}</span>
+                <span class="muted small">{{a.pet}} · {{a.when}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+      </aside>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ---------- DANH SÁCH THÚ CƯNG ---------- -->
+  <sc-if value="{{pg.pets}}" hint-placeholder-val="{{ false }}">
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <p class="hand greet">tủ hồ sơ</p>
+        <h1 class="h1">Thú cưng</h1>
+        <p class="muted" style="margin:4px 0 0">{{petsCountText}}</p>
+      </div>
+      <button type="button" class="btn btn-p" onClick="{{H.addPet}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Thêm thú cưng</button>
+    </div>
+    <div class="toolbar">
+      <div style="position:relative;flex:1 1 280px">
+        <svg style="position:absolute;left:14px;top:14px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#75604F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input class="inp s-inp" type="search" aria-label="Tìm thú cưng" placeholder="Tìm theo tên, giống, màu lông…" value="{{petQuery}}" onChange="{{H.onPetQuery}}">
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" role="group" aria-label="Lọc theo loài">
+        <sc-for list="{{speciesChips}}" as="c" hint-placeholder-count="4"><button type="button" class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.label}}</button></sc-for>
+      </div>
+    </div>
+    <sc-if value="{{petsFilteredEmpty}}" hint-placeholder-val="{{ false }}">
+      <div class="card empty"><h3 class="h2">Không tìm thấy bé nào</h3><p class="muted" style="margin:0">Thử đổi từ khóa hoặc bộ lọc loài.</p></div>
+    </sc-if>
+    <div class="pgrid">
+      <sc-for list="{{petsFiltered}}" as="p" hint-placeholder-count="3">
+        <article class="pcard">
+          <button type="button" class="passport flat" onClick="{{p.open}}" aria-label="Mở sổ của {{p.name}}">
+            <span class="pp-photo" style="background: {{p.bg}}">
+              <sc-if value="{{p.hasPhoto}}" hint-placeholder-val="{{ false }}"><img class="face" src="{{p.photo}}" alt="" style="width:80px;height:80px"></sc-if>
+              <sc-if value="{{p.hasIllus}}" hint-placeholder-val="{{ false }}"><img class="face illus" src="{{p.illus}}" alt="" style="width:80px;height:80px"></sc-if>
+              <sc-if value="{{p.noPhoto}}" hint-placeholder-val="{{ true }}"><span class="face" aria-hidden="true" style="width:80px;height:80px;font-size:36px">{{p.initials}}</span></sc-if>
+            </span>
+            <span class="pp-body">
+              <span style="display:flex;flex-direction:column">
+                <span class="pp-name">{{p.name}}</span>
+                <span class="muted" style="font-size:14px;font-weight:700">{{p.species}} · {{p.breedText}} · {{p.gender}}</span>
+              </span>
+              <span class="pp-fields">
+                <span class="pp-f"><span>Tuổi</span><b>{{p.ageText}}</b></span>
+                <span class="pp-f"><span>Cân nặng</span><b>{{p.weightText}}</b></span>
+                <span class="pp-f"><span>Tiêm chủng</span><b>{{p.vaccSummary}}</b></span>
+              </span>
+            </span>
+          </button>
+          <div class="pactions">
+            <button type="button" class="btn btn-sm btn-p" style="flex:1" onClick="{{p.open}}">Mở sổ</button>
+            <button type="button" class="btn btn-sm" onClick="{{p.edit}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg>Sửa</button>
+            <button type="button" class="btn btn-sm icon-btn btn-d" onClick="{{p.del}}" aria-label="Xóa {{p.name}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg></button>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ---------- SỔ CỦA MỘT BÉ ---------- -->
+  <sc-if value="{{pg.pet}}" hint-placeholder-val="{{ false }}">
+  <div class="wrap" style="gap:18px">
+    <div><button type="button" class="btn btn-sm btn-flat" onClick="{{H.navPets}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>Tất cả thú cưng</button></div>
+    <div class="detail">
+      <aside class="card idpage" aria-label="Trang nhận dạng">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <span class="pp-no">HỘ CHIẾU · {{cp.code}}</span>
+          <span class="{{cp.stampCls}}">{{cp.stampText}}</span>
+        </div>
+        <div style="display:flex;justify-content:center;padding:14px;border-radius:18px;border:2.5px dashed #3A2E28;background: {{cp.bg}}">
+          <sc-if value="{{cp.hasPhoto}}" hint-placeholder-val="{{ false }}"><img class="face" src="{{cp.photo}}" alt="Ảnh {{cp.name}}" style="width:140px;height:140px;border-radius:24px"></sc-if>
+          <sc-if value="{{cp.hasIllus}}" hint-placeholder-val="{{ false }}"><img class="face illus" src="{{cp.illus}}" alt="" style="width:140px;height:140px;border-radius:24px"></sc-if><sc-if value="{{cp.noPhoto}}" hint-placeholder-val="{{ true }}"><span class="face" aria-hidden="true" style="width:140px;height:140px;font-size:64px;border-radius:24px">{{cp.initials}}</span></sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <label class="btn btn-sm btn-p" for="cp-photo" style="cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>{{photoBtnLabel}}</label>
+            <input id="cp-photo" class="sr" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onChange="{{H.quickPhoto}}">
+            <sc-if value="{{cp.hasPhoto}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-sm" onClick="{{H.removePhoto}}">Gỡ ảnh</button></sc-if>
+          </div>
+          <sc-if value="{{photoErr}}" hint-placeholder-val="{{ false }}"><p class="err" style="margin:0" role="alert">{{photoErr}}</p></sc-if>
+          <sc-if value="{{noPhotoErr}}" hint-placeholder-val="{{ true }}"><p class="hint" style="margin:0">JPG hoặc PNG, tối đa 2 MB</p></sc-if>
+        </div>
+        <div style="text-align:center">
+          <h1 class="h1">{{cp.name}}</h1>
+          <p class="muted" style="margin:2px 0 0">{{cp.species}} · {{cp.breedText}} · {{cp.gender}}</p>
+        </div>
+        <dl class="idrows">
+          <sc-for list="{{profileRows}}" as="r" hint-placeholder-count="5">
+            <div><dt>{{r.k}}</dt><dd>{{r.v}}</dd></div>
+          </sc-for>
+        </dl>
+        <div>
+          <p class="pp-f" style="margin:0"><span>Mô tả</span></p>
+          <p style="margin:2px 0 0;white-space:pre-line">{{cp.descText}}</p>
+        </div>
+        <div style="background:#FCE3E8;border:2px solid #3A2E28;border-radius:14px;padding:10px 12px">
+          <p class="pp-f" style="margin:0"><span>Ghi chú</span></p>
+          <p style="margin:2px 0 0;white-space:pre-line">{{cp.notesText}}</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-sm" style="flex:1" onClick="{{H.editCurrent}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg>Sửa hồ sơ</button>
+          <button type="button" class="btn btn-sm icon-btn btn-d" onClick="{{H.delCurrent}}" aria-label="Xóa {{cp.name}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg></button>
+        </div>
+        <p class="muted small" style="margin:0;text-align:center">Tạo {{cp.createdText}} · Cập nhật {{cp.updatedText}}</p>
+      </aside>
+
+      <section style="min-width:0">
+        <div class="ftabs" role="tablist" aria-label="Các trang trong sổ">
+          <button type="button" role="tab" aria-selected="{{tabSel.health}}" class="{{tabCls.health}}" onClick="{{H.tabHealth}}">Sức khỏe <span class="count">{{cp.nHealth}}</span></button>
+          <button type="button" role="tab" aria-selected="{{tabSel.vacc}}" class="{{tabCls.vacc}}" onClick="{{H.tabVacc}}">Tiêm chủng <span class="count">{{cp.nVacc}}</span></button>
+          <button type="button" role="tab" aria-selected="{{tabSel.docs}}" class="{{tabCls.docs}}" onClick="{{H.tabDocs}}">Tài liệu <span class="count">{{cp.nDocs}}</span></button>
+        </div>
+        <div class="panel" role="tabpanel">
+
+          <sc-if value="{{tab.health}}" hint-placeholder-val="{{ true }}">
+          <div class="toolbar">
+            <div style="position:relative;flex:1 1 240px">
+              <svg style="position:absolute;left:14px;top:14px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#75604F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+              <input class="inp s-inp" type="search" aria-label="Tìm lần khám" placeholder="Tìm lý do, chẩn đoán, thuốc…" value="{{tabQuery}}" onChange="{{H.onTabQuery}}">
+            </div>
+            <button type="button" class="btn btn-p" onClick="{{H.addHealth}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Thêm lần khám</button>
+          </div>
+          <sc-if value="{{hlEmpty}}" hint-placeholder-val="{{ false }}">
+            <div class="empty"><h3 class="h2">{{hlEmptyTitle}}</h3><p class="muted" style="margin:0">Mỗi lần khám lưu lý do, chẩn đoán, điều trị và thuốc.</p></div>
+          </sc-if>
+          <div class="tl">
+            <sc-for list="{{hl}}" as="h" hint-placeholder-count="2">
+              <div class="{{h.tlCls}}">
+                <div class="tl-date hand">{{h.dateText}}<br><span class="muted" style="font-size:15px">{{h.agoText}}</span></div>
+                <div class="tl-dot" aria-hidden="true"></div>
+                <div class="tl-body">
+                  <h3 class="h3">{{h.reason}}</h3>
+                  <p style="margin:0;font-size:14px"><span class="muted">Chẩn đoán:</span> {{h.diagText}}</p>
+                  <sc-if value="{{h.hasMed}}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px"><span class="muted">Thuốc:</span> {{h.medication}}</p></sc-if>
+                  <div style="display:flex;gap:6px;margin-top:6px">
+                    <button type="button" class="btn btn-sm" onClick="{{h.view}}">Xem chi tiết</button>
+                    <button type="button" class="btn btn-sm icon-btn" onClick="{{h.edit}}" aria-label="Sửa lần khám"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+                    <button type="button" class="btn btn-sm icon-btn btn-d" onClick="{{h.del}}" aria-label="Xóa lần khám"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{tab.vacc}}" hint-placeholder-val="{{ false }}">
+          <div class="toolbar">
+            <div style="position:relative;flex:1 1 240px">
+              <svg style="position:absolute;left:14px;top:14px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#75604F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+              <input class="inp s-inp" type="search" aria-label="Tìm mũi tiêm" placeholder="Tìm tên vắc xin, liều…" value="{{tabQuery}}" onChange="{{H.onTabQuery}}">
+            </div>
+            <button type="button" class="btn btn-p" onClick="{{H.addVacc}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Thêm mũi tiêm</button>
+          </div>
+          <sc-if value="{{vlEmpty}}" hint-placeholder-val="{{ false }}">
+            <div class="empty"><h3 class="h2">{{vlEmptyTitle}}</h3><p class="muted" style="margin:0">Mỗi mũi tiêm là một con dấu trong sổ.</p></div>
+          </sc-if>
+          <div class="stamps">
+            <sc-for list="{{vl}}" as="v" hint-placeholder-count="2">
+              <article class="{{v.stampCls}}">
+                <div style="display:flex;gap:12px;align-items:center">
+                  <div class="vmark" aria-hidden="true"><b>{{v.dd}}</b><span>{{v.mmyy}}</span></div>
+                  <div style="min-width:0">
+                    <h3 class="h3">{{v.vaccine_name}}</h3>
+                    <span class="tag t-blue" style="margin-top:4px">{{v.dose}}</span>
+                  </div>
+                </div>
+                <p style="margin:0;font-size:13px" class="muted">Ngày tiêm {{v.dateText}}</p>
+                <sc-if value="{{v.hasNotes}}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px">{{v.notes}}</p></sc-if>
+                <div style="display:flex;gap:6px;margin-top:auto">
+                  <button type="button" class="btn btn-sm" style="flex:1" onClick="{{v.view}}">Xem</button>
+                  <button type="button" class="btn btn-sm icon-btn" onClick="{{v.edit}}" aria-label="Sửa mũi tiêm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+                  <button type="button" class="btn btn-sm icon-btn btn-d" onClick="{{v.del}}" aria-label="Xóa mũi tiêm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg></button>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{tab.docs}}" hint-placeholder-val="{{ false }}">
+          <div class="toolbar">
+            <div style="position:relative;flex:1 1 220px">
+              <svg style="position:absolute;left:14px;top:14px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#75604F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+              <input class="inp s-inp" type="search" aria-label="Tìm tài liệu" placeholder="Tìm tên tệp, mô tả…" value="{{tabQuery}}" onChange="{{H.onTabQuery}}">
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap" role="group" aria-label="Lọc loại tệp">
+              <sc-for list="{{docChips}}" as="c" hint-placeholder-count="3"><button type="button" class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.label}}</button></sc-for>
+            </div>
+            <button type="button" class="btn btn-p" onClick="{{H.addDoc}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"></path><path d="M7 10l5-5 5 5"></path><path d="M5 20h14"></path></svg>Tải lên</button>
+          </div>
+          <sc-if value="{{dlEmpty}}" hint-placeholder-val="{{ false }}">
+            <div class="empty"><h3 class="h2">{{dlEmptyTitle}}</h3><p class="muted" style="margin:0">Hỗ trợ JPG, PNG, PDF — tối đa 4 MB mỗi tệp.</p></div>
+          </sc-if>
+          <div class="docs">
+            <sc-for list="{{dl}}" as="d" hint-placeholder-count="2">
+              <article class="polaroid">
+                <sc-if value="{{d.showImg}}" hint-placeholder-val="{{ false }}"><img src="{{d.url}}" alt="{{d.file_name}}" style="width:100%;height:130px;object-fit:cover;border-radius:4px;border:2px solid #3A2E28;background:#FBF1DF"></sc-if>
+                <sc-if value="{{d.isPdf}}" hint-placeholder-val="{{ true }}">
+                  <div style="height:130px;border-radius:4px;border:2px solid #3A2E28;background:#FCE3E0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                    <svg width="38" height="38" viewBox="0 0 24 24" fill="#FFFCF5" stroke="#3A2E28" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path></svg>
+                    <span class="tag">PDF</span>
+                  </div>
+                </sc-if>
+                <div style="min-width:0">
+                  <div style="font-weight:800;font-size:14px;overflow-wrap:anywhere">{{d.file_name}}</div>
+                  <div class="muted small">{{d.typeLabel}} · {{d.dateText}}</div>
+                  <sc-if value="{{d.hasDesc}}" hint-placeholder-val="{{ false }}"><p class="hand" style="margin:4px 0 0;font-size:17px;line-height:1.2">{{d.description}}</p></sc-if>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:auto">
+                  <button type="button" class="btn btn-sm" style="flex:1" onClick="{{d.view}}">Xem</button>
+                  <sc-if value="{{d.hasUrl}}" hint-placeholder-val="{{ true }}"><a class="btn btn-sm icon-btn" href="{{d.url}}" download="{{d.file_name}}" aria-label="Tải xuống {{d.file_name}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg></a></sc-if>
+                  <button type="button" class="btn btn-sm icon-btn btn-d" onClick="{{d.del}}" aria-label="Xóa tài liệu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg></button>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+          </sc-if>
+
+        </div>
+      </section>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ---------- TÌM KIẾM ---------- -->
+  <sc-if value="{{pg.search}}" hint-placeholder-val="{{ false }}">
+  <div class="wrap" style="max-width:860px;margin:0 auto">
+    <div class="page-head"><div><p class="hand greet">lục lại sổ</p><h1 class="h1">Tìm kiếm</h1></div></div>
+    <div style="position:relative">
+      <svg style="position:absolute;left:16px;top:17px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#75604F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input class="inp s-inp" style="height:54px;font-size:17px;padding-left:46px;border-width:2.5px;box-shadow:0 3px 0 #3A2E28" type="search" aria-label="Từ khóa tìm kiếm" placeholder="Ví dụ: Mochi, dại, viêm tai, sổ tiêm…" value="{{searchQuery}}" onChange="{{H.onSearch}}">
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap" role="group" aria-label="Lọc theo loại dữ liệu">
+      <sc-for list="{{searchChips}}" as="c" hint-placeholder-count="5"><button type="button" class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.label}}</button></sc-for>
+    </div>
+    <sc-if value="{{searchIdle}}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:16px"><img src="/assets/6f21ee961c0b8ff919470721e02b6978.png" alt="" aria-hidden="true" style="width:90px;height:90px;border-radius:50%;border:2.5px solid #3A2E28;background:#FDE3BC;object-fit:cover"><p class="hand muted" style="margin:0;font-size:22px">Gõ vài chữ, các bé sẽ đi tìm giúp bạn…</p></div></sc-if>
+    <sc-if value="{{resultsEmpty}}" hint-placeholder-val="{{ false }}">
+      <div class="card empty"><h3 class="h2">Không có kết quả</h3><p class="muted" style="margin:0">Không tìm thấy dữ liệu khớp với “{{searchQuery}}”.</p></div>
+    </sc-if>
+    <sc-if value="{{resultsHas}}" hint-placeholder-val="{{ false }}">
+    <div class="card" style="padding:10px 14px">
+      <p class="muted small" style="margin:6px 6px 8px;font-weight:800">{{resultsCount}}</p>
+      <sc-for list="{{results}}" as="r" hint-placeholder-count="3">
+        <button type="button" class="row-btn" onClick="{{r.go}}" style="flex-wrap:wrap;align-items:center;border-top:2px dashed #E8D6B8;border-radius:0;padding:12px 6px">
+          <span class="{{r.bcls}}" style="min-width:92px;justify-content:center">{{r.type}}</span>
+          <span style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column">
+            <span style="font-weight:800">{{r.title}}</span>
+            <span class="muted small">{{r.sub}}</span>
+          </span>
+          <span class="tag">{{r.pet}}</span>
+        </button>
+      </sc-for>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ---------- TÀI KHOẢN ---------- -->
+  <sc-if value="{{pg.account}}" hint-placeholder-val="{{ false }}">
+  <div class="wrap" style="max-width:720px;margin:0 auto">
+    <div class="page-head"><div><p class="hand greet">chủ sổ</p><h1 class="h1">Tài khoản</h1></div></div>
+    <section class="card" style="padding:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:center">
+      <sc-if value="{{meHasAvatar}}" hint-placeholder-val="{{ false }}"><img class="ava" src="{{me.avatar}}" alt="Ảnh đại diện" style="width:84px;height:84px"></sc-if>
+      <sc-if value="{{meNoAvatar}}" hint-placeholder-val="{{ true }}"><span class="ava" aria-hidden="true" style="width:84px;height:84px;font-size:30px;background:#FCE3E8">{{meInitials}}</span></sc-if>
+      <div style="flex:1 1 240px;min-width:0">
+        <h2 class="h2">{{me.name}}</h2>
+        <p style="margin:2px 0 0">{{me.email}}</p>
+        <p class="muted small" style="margin:6px 0 0">Thành viên từ {{meSince}} · {{petsCountText}}</p>
+      </div>
+      <button type="button" class="btn" onClick="{{H.editAccount}}">Sửa thông tin</button>
+    </section>
+    <section class="card" style="padding:8px 22px">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:2px dashed #E3CFAF">
+        <div><h2 class="h3">Mật khẩu</h2><p class="muted small" style="margin:2px 0 0">Mật khẩu được lưu dạng hash, không lưu bản gốc.</p></div>
+        <button type="button" class="btn btn-sm" onClick="{{H.changePassword}}">Đổi mật khẩu</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding:14px 0">
+        <div><h2 class="h3">Đăng xuất</h2><p class="muted small" style="margin:2px 0 0">Kết thúc phiên đăng nhập trên thiết bị này.</p></div>
+        <button type="button" class="btn btn-sm btn-d" onClick="{{H.logout}}">Đăng xuất</button>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+</main>
+</div>
+</sc-if>
+
+</div>
+<!-- ================= FORM MODAL ================= -->
+<sc-if value="{{md.form}}" hint-placeholder-val="{{ false }}">
+<div class="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pp-mt">
+    <div class="m-head">
+      <div>
+        <h2 id="pp-mt" class="h2">{{modalTitle}}</h2>
+        <sc-if value="{{modalSub}}" hint-placeholder-val="{{ false }}"><p class="muted small" style="margin:2px 0 0">{{modalSub}}</p></sc-if>
+      </div>
+      <button type="button" class="btn icon-btn btn-flat" onClick="{{H.close}}" aria-label="Đóng"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="m-body">
+
+      <sc-if value="{{md.pet}}" hint-placeholder-val="{{ false }}">
+      <div class="fgrid">
+        <div class="span2" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#FBF1DF;border-radius:18px;padding:14px">
+          <sc-if value="{{fHasPhoto}}" hint-placeholder-val="{{ false }}"><img class="face" src="{{f.photo}}" alt="Ảnh xem trước" style="width:72px;height:72px"></sc-if>
+          <sc-if value="{{fNoPhoto}}" hint-placeholder-val="{{ true }}"><span class="face" aria-hidden="true" style="width:72px;height:72px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3A2E28" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 17l-5-5-9 8"></path></svg></span></sc-if>
+          <div style="flex:1 1 200px">
+            <label class="lbl" for="pt-photo">Ảnh của bé</label>
+            <input id="pt-photo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onChange="{{H.onPhoto}}" style="font:inherit;font-size:13px;max-width:100%">
+            <sc-if value="{{err.photo}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.photo}}</p></sc-if>
+            <sc-if value="{{noErr.photo}}" hint-placeholder-val="{{ true }}"><p class="hint">JPG hoặc PNG, tối đa 2 MB.</p></sc-if>
+          </div>
+          <sc-if value="{{fHasPhoto}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-sm" onClick="{{H.clearPhoto}}">Gỡ ảnh</button></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-name">Tên thú cưng <span class="req">*</span></label>
+          <input id="pt-name" class="{{cls.name}}" type="text" value="{{f.name}}" onChange="{{H.on.name}}" placeholder="Ví dụ: Mochi">
+          <sc-if value="{{err.name}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.name}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-species">Loài <span class="req">*</span></label>
+          <select id="pt-species" class="{{cls.species}}" value="{{f.species}}" onChange="{{H.on.species}}">
+            <option value="">Chọn loài</option>
+            <option value="Chó">Chó</option>
+            <option value="Mèo">Mèo</option>
+            <option value="Chim">Chim</option>
+            <option value="Thỏ">Thỏ</option>
+            <option value="Hamster">Hamster</option>
+            <option value="Khác">Khác</option>
+          </select>
+          <sc-if value="{{err.species}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.species}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-breed">Giống</label>
+          <input id="pt-breed" class="{{cls.breed}}" type="text" value="{{f.breed}}" onChange="{{H.on.breed}}" placeholder="Ví dụ: Corgi">
+          <sc-if value="{{err.breed}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.breed}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-gender">Giới tính <span class="req">*</span></label>
+          <select id="pt-gender" class="{{cls.gender}}" value="{{f.gender}}" onChange="{{H.on.gender}}">
+            <option value="">Chọn giới tính</option>
+            <option value="Đực">Đực</option>
+            <option value="Cái">Cái</option>
+          </select>
+          <sc-if value="{{err.gender}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.gender}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-dob">Ngày sinh</label>
+          <input id="pt-dob" class="{{cls.date_of_birth}}" type="date" value="{{f.date_of_birth}}" onChange="{{H.on.date_of_birth}}">
+          <sc-if value="{{err.date_of_birth}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.date_of_birth}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pt-weight">Cân nặng (kg)</label>
+          <input id="pt-weight" class="{{cls.weight}}" type="text" inputmode="decimal" value="{{f.weight}}" onChange="{{H.on.weight}}" placeholder="Ví dụ: 4.5">
+          <sc-if value="{{err.weight}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.weight}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="pt-color">Màu lông</label>
+          <input id="pt-color" class="{{cls.color}}" type="text" value="{{f.color}}" onChange="{{H.on.color}}" placeholder="Ví dụ: Vàng trắng">
+          <sc-if value="{{err.color}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.color}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="pt-desc">Mô tả</label>
+          <textarea id="pt-desc" class="{{cls.description}}" value="{{f.description}}" onChange="{{H.on.description}}" placeholder="Tính cách, đặc điểm nhận dạng…"></textarea>
+          <sc-if value="{{err.description}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.description}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="pt-notes">Ghi chú</label>
+          <textarea id="pt-notes" class="{{cls.notes}}" value="{{f.notes}}" onChange="{{H.on.notes}}" placeholder="Dị ứng, chế độ ăn, lưu ý khác…"></textarea>
+          <sc-if value="{{err.notes}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.notes}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{md.health}}" hint-placeholder-val="{{ false }}">
+      <div class="fgrid">
+        <div>
+          <label class="lbl" for="hr-date">Ngày khám <span class="req">*</span></label>
+          <input id="hr-date" class="{{cls.examination_date}}" type="date" value="{{f.examination_date}}" onChange="{{H.on.examination_date}}">
+          <sc-if value="{{err.examination_date}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.examination_date}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="hr-reason">Lý do khám <span class="req">*</span></label>
+          <input id="hr-reason" class="{{cls.reason}}" type="text" value="{{f.reason}}" onChange="{{H.on.reason}}" placeholder="Ví dụ: Khám định kỳ">
+          <sc-if value="{{err.reason}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.reason}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="hr-diag">Chẩn đoán</label>
+          <input id="hr-diag" class="{{cls.diagnosis}}" type="text" value="{{f.diagnosis}}" onChange="{{H.on.diagnosis}}">
+          <sc-if value="{{err.diagnosis}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.diagnosis}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="hr-treat">Điều trị</label>
+          <textarea id="hr-treat" class="{{cls.treatment}}" value="{{f.treatment}}" onChange="{{H.on.treatment}}"></textarea>
+          <sc-if value="{{err.treatment}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.treatment}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="hr-med">Thuốc</label>
+          <input id="hr-med" class="{{cls.medication}}" type="text" value="{{f.medication}}" onChange="{{H.on.medication}}" placeholder="Tên thuốc, liều dùng">
+          <sc-if value="{{err.medication}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.medication}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="hr-notes">Ghi chú</label>
+          <textarea id="hr-notes" class="{{cls.notes}}" value="{{f.notes}}" onChange="{{H.on.notes}}"></textarea>
+          <sc-if value="{{err.notes}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.notes}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{md.vacc}}" hint-placeholder-val="{{ false }}">
+      <div class="fgrid">
+        <div class="span2">
+          <label class="lbl" for="vc-name">Tên vắc xin <span class="req">*</span></label>
+          <input id="vc-name" class="{{cls.vaccine_name}}" type="text" value="{{f.vaccine_name}}" onChange="{{H.on.vaccine_name}}" placeholder="Ví dụ: Dại (Rabies)">
+          <sc-if value="{{err.vaccine_name}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.vaccine_name}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="vc-date">Ngày tiêm <span class="req">*</span></label>
+          <input id="vc-date" class="{{cls.vaccination_date}}" type="date" value="{{f.vaccination_date}}" onChange="{{H.on.vaccination_date}}">
+          <sc-if value="{{err.vaccination_date}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.vaccination_date}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="vc-dose">Liều / mũi <span class="req">*</span></label>
+          <input id="vc-dose" class="{{cls.dose}}" type="text" value="{{f.dose}}" onChange="{{H.on.dose}}" placeholder="Ví dụ: Mũi 1">
+          <sc-if value="{{err.dose}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.dose}}</p></sc-if>
+        </div>
+        <div class="span2">
+          <label class="lbl" for="vc-notes">Ghi chú</label>
+          <textarea id="vc-notes" class="{{cls.notes}}" value="{{f.notes}}" onChange="{{H.on.notes}}" placeholder="Phản ứng sau tiêm, số lô…"></textarea>
+          <sc-if value="{{err.notes}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.notes}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{md.doc}}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <label class="lbl" for="dc-file">Tệp tài liệu <span class="req">*</span></label>
+          <div style="border:2.5px dashed #3A2E28;background:#FBF1DF;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+            <input id="dc-file" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onChange="{{H.onDocFile}}" style="font:inherit;font-size:14px;max-width:100%">
+            <sc-if value="{{fHasFile}}" hint-placeholder-val="{{ false }}"><span class="tag t-green">{{fileInfo}}</span></sc-if>
+          </div>
+          <sc-if value="{{err.file}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.file}}</p></sc-if>
+          <sc-if value="{{noErr.file}}" hint-placeholder-val="{{ true }}"><p class="hint">Chấp nhận JPG, PNG, PDF · tối đa 4 MB.</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="dc-desc">Mô tả</label>
+          <textarea id="dc-desc" class="{{cls.description}}" value="{{f.description}}" onChange="{{H.on.description}}" placeholder="Ví dụ: Bản scan sổ tiêm chủng"></textarea>
+          <sc-if value="{{err.description}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.description}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{md.account}}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#FBF1DF;border-radius:18px;padding:14px">
+          <sc-if value="{{fHasAvatar}}" hint-placeholder-val="{{ false }}"><img class="ava" src="{{f.avatar}}" alt="Ảnh đại diện xem trước" style="width:64px;height:64px"></sc-if>
+          <sc-if value="{{fNoAvatar}}" hint-placeholder-val="{{ true }}"><span class="ava" aria-hidden="true" style="width:64px;height:64px;font-size:22px;background:#FCE3E8">{{meInitials}}</span></sc-if>
+          <div style="flex:1 1 200px">
+            <label class="lbl" for="ac-avatar">Ảnh đại diện</label>
+            <input id="ac-avatar" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onChange="{{H.onAvatar}}" style="font:inherit;font-size:13px;max-width:100%">
+            <sc-if value="{{err.avatar}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.avatar}}</p></sc-if>
+          </div>
+          <sc-if value="{{fHasAvatar}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-sm" onClick="{{H.clearAvatar}}">Gỡ ảnh</button></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="ac-name">Họ và tên <span class="req">*</span></label>
+          <input id="ac-name" class="{{cls.name}}" type="text" value="{{f.name}}" onChange="{{H.on.name}}">
+          <sc-if value="{{err.name}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.name}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="ac-email">Email <span class="req">*</span></label>
+          <input id="ac-email" class="{{cls.email}}" type="text" inputmode="email" value="{{f.email}}" onChange="{{H.on.email}}">
+          <sc-if value="{{err.email}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.email}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{md.password}}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <label class="lbl" for="pw-cur">Mật khẩu hiện tại <span class="req">*</span></label>
+          <input id="pw-cur" class="{{cls.current_password}}" type="password" autocomplete="current-password" value="{{f.current_password}}" onChange="{{H.on.current_password}}">
+          <sc-if value="{{err.current_password}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.current_password}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pw-new">Mật khẩu mới <span class="req">*</span></label>
+          <input id="pw-new" class="{{cls.new_password}}" type="password" autocomplete="new-password" value="{{f.new_password}}" onChange="{{H.on.new_password}}">
+          <sc-if value="{{err.new_password}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.new_password}}</p></sc-if>
+        </div>
+        <div>
+          <label class="lbl" for="pw-confirm">Nhập lại mật khẩu mới <span class="req">*</span></label>
+          <input id="pw-confirm" class="{{cls.confirm}}" type="password" autocomplete="new-password" value="{{f.confirm}}" onChange="{{H.on.confirm}}">
+          <sc-if value="{{err.confirm}}" hint-placeholder-val="{{ false }}"><p class="err">{{err.confirm}}</p></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+    <div class="m-foot">
+      <button type="button" class="btn" onClick="{{H.close}}">Hủy</button>
+      <button type="button" class="btn btn-p" disabled="{{saving}}" onClick="{{H.submitModal}}">{{saveLabel}}</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= VIEW MODALS ================= -->
+<sc-if value="{{md.viewHealth}}" hint-placeholder-val="{{ false }}">
+<div class="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pp-vh">
+    <div class="m-head">
+      <div><span class="tag t-green">Lần khám · {{vh.code}}</span><h2 id="pp-vh" class="h2" style="margin-top:8px">{{vh.reason}}</h2><p class="muted small" style="margin:2px 0 0">{{vh.petName}} · Ngày khám {{vh.dateText}}</p></div>
+      <button type="button" class="btn icon-btn btn-flat" onClick="{{H.close}}" aria-label="Đóng"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <dl class="m-body kv">
+      <div><dt>Chẩn đoán</dt><dd style="white-space:pre-line">{{vh.diagnosisText}}</dd></div>
+      <div><dt>Điều trị</dt><dd style="white-space:pre-line">{{vh.treatmentText}}</dd></div>
+      <div><dt>Thuốc</dt><dd style="white-space:pre-line">{{vh.medicationText}}</dd></div>
+      <div><dt>Ghi chú</dt><dd style="white-space:pre-line">{{vh.notesText}}</dd></div>
+    </dl>
+    <div class="m-foot">
+      <button type="button" class="btn" onClick="{{H.close}}">Đóng</button>
+      <button type="button" class="btn btn-p" onClick="{{H.editViewed}}">Chỉnh sửa</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{md.viewVacc}}" hint-placeholder-val="{{ false }}">
+<div class="overlay">
+  <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="pp-vv">
+    <div class="m-head">
+      <div><span class="tag t-blue">Tiêm chủng · {{vv.code}}</span><h2 id="pp-vv" class="h2" style="margin-top:8px">{{vv.vaccine_name}}</h2><p class="muted small" style="margin:2px 0 0">{{vv.petName}}</p></div>
+      <button type="button" class="btn icon-btn btn-flat" onClick="{{H.close}}" aria-label="Đóng"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <dl class="m-body kv">
+      <div><dt>Ngày tiêm</dt><dd>{{vv.dateText}}</dd></div>
+      <div><dt>Liều / mũi</dt><dd>{{vv.dose}}</dd></div>
+      <div><dt>Ghi chú</dt><dd style="white-space:pre-line">{{vv.notesText}}</dd></div>
+    </dl>
+    <div class="m-foot">
+      <button type="button" class="btn" onClick="{{H.close}}">Đóng</button>
+      <button type="button" class="btn btn-p" onClick="{{H.editViewed}}">Chỉnh sửa</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{md.viewDoc}}" hint-placeholder-val="{{ false }}">
+<div class="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pp-vd">
+    <div class="m-head">
+      <div style="min-width:0"><span class="tag t-orange">Tài liệu · {{vd.code}}</span><h2 id="pp-vd" class="h2" style="margin-top:8px;overflow-wrap:anywhere">{{vd.file_name}}</h2><p class="muted small" style="margin:2px 0 0">{{vd.petName}} · {{vd.typeLabel}} · Tải lên {{vd.dateText}}</p></div>
+      <button type="button" class="btn icon-btn btn-flat" onClick="{{H.close}}" aria-label="Đóng"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="m-body" style="display:flex;flex-direction:column;gap:14px">
+      <sc-if value="{{vd.showImg}}" hint-placeholder-val="{{ false }}"><img src="{{vd.url}}" alt="{{vd.file_name}}" style="width:100%;max-height:420px;object-fit:contain;border-radius:16px;border:2px solid #3A2E28;background:#FBF1DF"></sc-if>
+      <sc-if value="{{vd.isPdf}}" hint-placeholder-val="{{ false }}">
+        <div style="border-radius:16px;border:2px solid #3A2E28;background:#FCE3E0;padding:28px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="#FFFCF5" stroke="#3A2E28" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path></svg>
+          <span style="font-weight:800">Tài liệu PDF</span>
+          <sc-if value="{{vd.hasUrl}}" hint-placeholder-val="{{ false }}"><a href="{{vd.url}}" target="_blank" rel="noopener" style="font-weight:800">Mở trong tab mới</a></sc-if>
+        </div>
+      </sc-if>
+      <dl class="kv">
+        <div><dt>Mô tả</dt><dd style="font-size:15px">{{vd.descText}}</dd></div>
+        <div><dt>Đường dẫn lưu trữ</dt><dd style="font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere">{{vd.file_path}}</dd></div>
+      </dl>
+    </div>
+    <div class="m-foot">
+      <button type="button" class="btn" onClick="{{H.close}}">Đóng</button>
+      <sc-if value="{{vd.hasUrl}}" hint-placeholder-val="{{ false }}"><a class="btn btn-p" href="{{vd.url}}" download="{{vd.file_name}}">Tải xuống</a></sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{md.confirm}}" hint-placeholder-val="{{ false }}">
+<div class="overlay">
+  <div class="modal modal-sm" role="alertdialog" aria-modal="true" aria-labelledby="pp-cf" aria-describedby="pp-cfd">
+    <div class="m-body" style="display:flex;flex-direction:column;gap:10px;padding-top:24px">
+      <h2 id="pp-cf" class="h2">{{confirm.title}}</h2>
+      <p id="pp-cfd" style="margin:0" class="muted">{{confirm.text}}</p>
+    </div>
+    <div class="m-foot">
+      <button type="button" class="btn" onClick="{{H.close}}">Hủy</button>
+      <button type="button" class="btn btn-dd" disabled="{{saving}}" onClick="{{H.confirmYes}}">{{deleteLabel}}</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{arriving}}" hint-placeholder-val="{{ false }}">
+<div class="arrive" role="status" aria-live="polite">
+  <div class="scene" aria-hidden="true">
+    <svg class="house" width="170" height="150" viewBox="0 0 170 150">
+      <g stroke="#3A2E28" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="22" y="62" width="126" height="86" rx="6" fill="#FFFCF5"></rect>
+        <path d="M8 70 L85 10 L162 70 Z" fill="#F2A541"></path>
+        <rect x="64" y="92" width="42" height="56" rx="21" fill="#E58E2E"></rect>
+        <circle cx="98" cy="122" r="2.5" fill="#3A2E28" stroke="none"></circle>
+        <rect x="32" y="84" width="22" height="22" rx="4" fill="#D9E8F5"></rect>
+        <rect x="116" y="84" width="22" height="22" rx="4" fill="#D9E8F5"></rect>
+        <rect x="66" y="40" width="38" height="18" rx="6" fill="#FFFCF5"></rect>
+        <path d="M85 54 c-3 -4 -8 -4 -8 -8 c0 -3 4 -4 8 -1 c4 -3 8 -2 8 1 c0 4 -5 4 -8 8 z" fill="#F7B9C6" stroke-width="2"></path>
+      </g>
+    </svg>
+    <svg class="heart" style="right:14%;bottom:150px;animation-delay:3.2s" width="26" height="24" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F7B9C6" stroke="#3A2E28" stroke-width="2.5"></path></svg>
+    <svg class="heart" style="right:22%;bottom:162px;animation-delay:3.6s" width="20" height="18" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F2A541" stroke="#3A2E28" stroke-width="2.5"></path></svg>
+
+    <div class="runner r1">
+      <span class="dust"></span><span class="dust d2"></span>
+      <span class="scat dog srun"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.png" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.png" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.png" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.png" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.png" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.png" alt="" style="transform-origin:38.2% 82.4%"></span></span>
+    </div>
+    <div class="runner r2">
+      <span class="dust"></span><span class="dust d2"></span>
+      <span class="scat srun"><span class="scat-in"><img class="sp sp-tail" src="/assets/2b765f6182a8f9779d8e2f721ce60e8c.png" alt=""><img class="sp sp-bl" src="/assets/35108e65bac65cac88e507578534e3a9.png" alt=""><img class="sp sp-br" src="/assets/36144e5453ac09019df75b0489a7615c.png" alt=""><img class="sp sp-body" src="/assets/fb5c707c4ae34315adb329d14fe2585a.png" alt=""><img class="sp sp-fl" src="/assets/55c94157a4759198cf9851efc3385f07.png" alt=""><img class="sp sp-fr" src="/assets/d70af102f81c72a61744c02001f84388.png" alt=""></span></span>
+    </div>
+    <div class="runner r3">
+      <span class="dust"></span><span class="dust d2"></span>
+      <span class="scat srun w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.png" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.png" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.png" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.png" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.png" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.png" alt=""></span></span>
+    </div>
+  </div>
+  <h2 class="h1" style="font-size:clamp(28px,4vw,38px)">Đang gọi các bé về<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h2>
+  <p class="hand muted" style="margin:-12px 0 0;font-size:21px">mở sổ hộ chiếu, kiểm tra mũi tiêm, xếp lại giấy tờ</p>
+  <div class="prog" aria-hidden="true"><span></span></div>
+  <button type="button" class="btn btn-sm btn-flat" onClick="{{H.skipArrive}}">Bỏ qua</button>
+</div>
+</sc-if>
+
+<div class="toasts" aria-live="polite">
+  <sc-for list="{{toasts}}" as="t" hint-placeholder-count="0"><div class="{{t.cls}}">{{t.text}}</div></sc-for>
+</div>
+
+<!-- ================= THE YARD: walking pets (decor, clickable) ================= -->
+<sc-if value="{{showYard}}" hint-placeholder-val="{{ true }}">
+<div class="{{yardCls}}">
+  <div class="ground" aria-hidden="true"></div>
+
+  <div class="mover m1">
+    <sc-if value="{{bub.c1}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.c1}}</span></sc-if>
+    <div class="flipper">
+      <button type="button" class="{{critCls.c1}}" onClick="{{H.pokeC1}}" aria-label="Mèo cam đi dạo — bấm để chơi">
+        <span class="scat"><span class="scat-in"><img class="sp sp-tail" src="/assets/9c6bceea5f948e98e6f6ab7d2240a5c5.png" alt=""><img class="sp sp-bl" src="/assets/863c361c635a7688366ab440dd2ffa83.png" alt=""><img class="sp sp-br" src="/assets/bcccc5e2ecc6f10d3e8ed4a033a5ad26.png" alt=""><img class="sp sp-body" src="/assets/542182c7eebbaec2c91cb125824045ce.png" alt=""><img class="sp sp-fl" src="/assets/c3c65f77a6bb45b7cc35519b5a75a1f2.png" alt=""><img class="sp sp-fr" src="/assets/8f07238589138869dce7786e0f258776.png" alt=""></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mover m2">
+    <sc-if value="{{bub.c2}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.c2}}</span></sc-if>
+    <div class="flipper">
+      <button type="button" class="{{critCls.c2}}" onClick="{{H.pokeC2}}" aria-label="Mèo mun đi dạo — bấm để chơi">
+        <span class="scat w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.png" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.png" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.png" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.png" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.png" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.png" alt=""></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mover m3">
+    <sc-if value="{{bub.d1}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.d1}}</span></sc-if>
+    <div class="flipper">
+      <button type="button" class="{{critCls.d1}}" onClick="{{H.pokeD1}}" aria-label="Cún con đi dạo — bấm để chơi">
+        <span class="scat dog"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.png" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.png" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.png" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.png" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.png" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.png" alt="" style="transform-origin:38.2% 82.4%"></span></span>
+      </button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+
+</div>
+</template>
+
+<script src="/js/validators.js"></script>
+<script src="/js/runtime.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
