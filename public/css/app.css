@@ -484,3 +484,13 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 @media (max-width:700px){.tnav{padding:0 12px;font-size:14px}.tnav svg{display:none}.who .who-name{display:none}.topbar-in{gap:8px 16px}.logo{padding-bottom:6px}}
 @media (max-width:600px){.fgrid{grid-template-columns:minmax(0,1fr)}.h1{font-size:27px}.overlay{padding:16px 8px}.passport{grid-template-columns:92px minmax(0,1fr)}.pp-photo{padding:10px}.pp-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tl-item{grid-template-columns:26px minmax(0,1fr);grid-template-areas:"dot date" "dot body"}.tl-date{text-align:left}.yard{height:70px}.critter svg{width:62px;height:auto}}
+/* Fix: khong nhay khi re chuot / cham, khong giat thanh cuon */
+.stk-1:hover{transform:rotate(-6deg)}
+.stk-2:hover{transform:rotate(3deg) translateY(-12px)}
+.stk-3:hover{transform:rotate(-2deg)}
+.stk:hover{z-index:auto}
+button.passport:hover,.tile:hover,.tile-open:hover .tile-art{transform:none}
+html{scrollbar-gutter:stable}
+html,body{overflow-x:clip}
+@media (hover:hover) and (pointer:fine){html{overflow-y:scroll}}
+@media (max-width:760px),(pointer:coarse){.pp input,.pp select,.pp textarea,.pp .inp{font-size:16px}}
