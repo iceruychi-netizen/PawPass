@@ -25,16 +25,36 @@ function sniff(type, buf) { return !!MAGIC[type] && MAGIC[type](buf); }
 
 /** Lower-case, ASCII-only file name safe for a storage key. */
 function safeName(name) {
-  const base = String(name || 'file').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  const base = String(name || 'file').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
   return base.toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/-+/g, '-').replace(/^[-.]+/, '').slice(-80) || 'file';
+}
+
+const { HttpError } = require('./http');
+/** Storage problems are shown to the user with the underlying reason, so they can be fixed from the message alone. */
+function storageError(message) { return new HttpError(500, message); }
+
+async function blobPut(key, buffer, contentType) {
+  const blob = require('@vercel/blob');
+  const opts = { contentType, addRandomSuffix: true };
+  try {
+    return (await blob.put(key, buffer, Object.assign({ access: 'public' }, opts))).url;
+  } catch (e) {
+    // Stores created as "private" refuse public uploads: retry as private (downloads go through the API anyway).
+    if (/private/i.test(String(e && e.message))) return (await blob.put(key, buffer, Object.assign({ access: 'private' }, opts))).url;
+    throw e;
+  }
 }
 
 async function put(key, buffer, contentType) {
   if (useBlob()) {
-    const { put: blobPut } = require('@vercel/blob');
-    const r = await blobPut(key, buffer, { access: 'public', contentType, addRandomSuffix: true });
-    return r.url;
+    try { return await blobPut(key, buffer, contentType); }
+    catch (e) {
+      console.error('[storage] Vercel Blob upload failed', e);
+      throw storageError('Không lưu được ảnh/tài liệu lên Vercel Blob: ' + String((e && e.message) || e).slice(0, 200));
+    }
   }
+  // Vercel's filesystem is read-only: without a Blob store there is nowhere to keep files.
+  if (process.env.VERCEL) throw storageError('Máy chủ chưa được cấu hình kho lưu ảnh/tài liệu (thiếu BLOB_READ_WRITE_TOKEN).');
   const rel = key.replace(/\.(\w+)$/, '-' + crypto.randomBytes(6).toString('hex') + '.$1');
   const abs = path.join(localDir(), rel);
   if (!abs.startsWith(localDir() + path.sep)) throw new Error('Invalid storage key');
@@ -45,7 +65,9 @@ async function put(key, buffer, contentType) {
 
 async function read(stored) {
   if (/^https:\/\//.test(stored)) {
-    const r = await fetch(stored);
+    // Private Blob stores need the token to read; public ones ignore the header.
+    const headers = process.env.BLOB_READ_WRITE_TOKEN ? { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } : {};
+    const r = await fetch(stored, { headers });
     if (!r.ok) throw new Error('Blob fetch failed: ' + r.status);
     return Buffer.from(await r.arrayBuffer());
   }
@@ -75,7 +97,7 @@ function resolveLocal(stored) {
 /** True for values this app itself stored (so an unchanged photo URL can be sent back). */
 function isStoredImage(v) {
   if (/^\/uploads\/photos\/[\w./-]+$/.test(v)) return true;
-  return /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\/photos\//i.test(v);
+  return /^https:\/\/[a-z0-9-]+\.(public\.|private\.)?blob\.vercel-storage\.com\/photos\//i.test(v);
 }
 
 module.exports = { sniff, safeName, put, read, remove, isStoredImage, localDir, MIME };
