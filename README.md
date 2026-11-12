@@ -115,3 +115,4 @@ Test giao diện kiểm tra toàn bộ luồng chính, không có lỗi console 
 - Tìm kiếm lọc phía client trên dữ liệu đã tải, phù hợp quy mô dữ liệu của một người dùng.
 - deploy
 - deloy2
+- deloy3
