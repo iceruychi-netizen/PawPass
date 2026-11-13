@@ -125,6 +125,7 @@ Test giao diện kiểm tra toàn bộ luồng chính, không có lỗi console 
 | Màn hình giật liên tục (chó mèo đi dạo) | `public/css/app.css`: chuyển hiệu ứng đi bộ sang `transform` |
 | Thẻ, nút nhảy lên khi rê chuột / chạm | `public/css/app.css`: bỏ hiệu ứng nhảy khi hover |
 | Thanh cuộn hiện/ẩn làm trang co giãn; iPhone tự phóng to khi chạm ô nhập | `public/css/app.css`: giữ chỗ thanh cuộn, chữ ô nhập 16px trên điện thoại |
+| Lighthouse: thiếu điểm mốc `<main>`, ảnh nặng, phông chữ và script chặn hiển thị | `public/index.html` (thẻ `<main>`, tải phông chữ song song, script `defer`), `public/assets/` (ảnh WebP, 1.040 KB → 196 KB) |
 
 Kiểm thử bản cuối: 39 test API và toàn bộ test giao diện đều qua.
 
