@@ -18,8 +18,8 @@
     c2: ['Meo.', 'Hừm, ai gọi đó?', 'Đang tuần tra…', 'Meo meo!'],
     d1: ['Gâu!', 'Gâu gâu!', 'Đi dạo không?', 'Vẫy đuôi nè!']
   };
-  var ILLUS_DOG = '/assets/135b8c70f4e0c9457eab939c2e37a6c3.png';
-  var ILLUS_CATS = ['/assets/6f21ee961c0b8ff919470721e02b6978.png', '/assets/5383fa76424f1e45f5e44ebe5d2a4b5a.png', '/assets/53e6244e58e71b47e1522d69400b0e07.png'];
+  var ILLUS_DOG = '/assets/135b8c70f4e0c9457eab939c2e37a6c3.webp';
+  var ILLUS_CATS = ['/assets/6f21ee961c0b8ff919470721e02b6978.webp', '/assets/5383fa76424f1e45f5e44ebe5d2a4b5a.webp', '/assets/53e6244e58e71b47e1522d69400b0e07.webp'];
   var TOKEN_KEY = 'pawpass.token';
   var TAB_SLUG = { health: 'health', vacc: 'vaccinations', docs: 'documents' };
   var SLUG_TAB = { health: 'health', vaccinations: 'vacc', documents: 'docs' };

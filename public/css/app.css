@@ -69,7 +69,7 @@ textarea.inp{height:auto;min-height:84px;padding:10px 14px;resize:vertical}
 .home{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:28px;align-items:start}
 .plist{display:flex;flex-direction:column;gap:18px}
 .passport{display:grid;grid-template-columns:120px minmax(0,1fr);background:#FFFCF5;border:2.5px solid #3A2E28;border-radius:20px;box-shadow:0 4px 0 #3A2E28;overflow:hidden;text-align:left;font:inherit;color:inherit;width:100%;padding:0;cursor:pointer;transition:transform .12s}
-button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
+
 .passport.flat{border:0;border-radius:0;box-shadow:none}
 .pp-photo{display:flex;align-items:center;justify-content:center;border-right:2.5px dashed #3A2E28;padding:14px}
 .pp-body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -259,7 +259,7 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 .res-ico{width:34px;height:34px;border-radius:50%;border:2.5px solid #5B3A1E;display:inline-flex;align-items:center;justify-content:center;color:#3A2E28}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
 .tile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 10px 14px;background:#FFFFFF;border:3px solid #5B3A1E;border-radius:22px;box-shadow:inset 0 0 0 4px #FFF6DC,0 7px 0 #5B3A1E;font:inherit;color:inherit;cursor:pointer;text-align:center;transition:transform .12s}
-.tile:hover{transform:translateY(-4px)}
+
 .tile:active{transform:translateY(3px);box-shadow:inset 0 0 0 4px #FFF6DC,0 2px 0 #5B3A1E}
 .tile:focus-visible{outline:3px solid #FFC93C;outline-offset:3px}
 .tile-art{position:relative;display:block;width:100%;aspect-ratio:1;border:3px solid #5B3A1E;border-radius:16px;overflow:hidden}
@@ -279,7 +279,7 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 .tile-card{cursor:default}
 .tile-card:hover,.tile-card:active{transform:none;box-shadow:inset 0 0 0 4px #FFF6DC,0 7px 0 #5B3A1E}
 .tile-open{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;text-align:center}
-.tile-open:hover .tile-art{transform:scale(1.02)}
+
 .tile-actions{display:flex;gap:6px;width:100%;margin-top:10px}
 @media (min-width:761px){.auth{height:calc(100vh - 126px);min-height:560px;padding-top:12px;padding-bottom:12px;align-content:center}.cover-wrap{padding-top:58px}}
 @media (min-width:761px) and (max-height:820px){.auth{height:calc(100vh - 126px)}.page{gap:10px;padding:14px 18px}.page .h1{font-size:22px!important}.cover-title{display:none}.auth-copy .stickers{transform:scale(.85);transform-origin:left top}}
@@ -390,7 +390,7 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 .stk-1{transform:rotate(-6deg);background:#FDE3BC}
 .stk-2{transform:rotate(3deg) translateY(-12px);background:#DDF0D6;z-index:1}
 .stk-3{transform:rotate(-2deg);background:#FCE3E8}
-.stk:hover{transform:rotate(0) translateY(-18px);z-index:3}
+
 .stk-art{background:#FFFCF5;border:2px solid #3A2E28;border-radius:12px;height:86px;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px}
 .stk-cap{font-family:'Patrick Hand',cursive;font-size:20px;line-height:1.05}
 .stk-sub{font-size:12px;font-weight:700;color:#5E4B3E;line-height:1.3}
@@ -484,3 +484,13 @@ button.passport:hover{transform:translateY(-2px) rotate(-.3deg)}
 @media (max-width:700px){.tnav{padding:0 12px;font-size:14px}.tnav svg{display:none}.who .who-name{display:none}.topbar-in{gap:8px 16px}.logo{padding-bottom:6px}}
 @media (max-width:600px){.fgrid{grid-template-columns:minmax(0,1fr)}.h1{font-size:27px}.overlay{padding:16px 8px}.passport{grid-template-columns:92px minmax(0,1fr)}.pp-photo{padding:10px}.pp-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tl-item{grid-template-columns:26px minmax(0,1fr);grid-template-areas:"dot date" "dot body"}.tl-date{text-align:left}.yard{height:70px}.critter svg{width:62px;height:auto}}
+
+/* ---- Step 3 stability fixes ---- */
+/* Reserve the scrollbar's space so pages never shift sideways when a scrollbar appears/disappears. */
+html{scrollbar-gutter:stable}
+/* clip (not hidden) keeps the page from becoming its own scroll box on iOS, which made touch-scrolling bounce. */
+html,body{overflow-x:clip}
+/* iOS zooms the page when a field under 16px gets focus — that was the jump when tapping inputs. */
+@media (max-width:760px),(pointer:coarse){.pp input,.pp select,.pp textarea,.pp .inp{font-size:16px}}
+/* Desktop: keep the vertical scrollbar always present so it can never flicker on and off. */
+@media (hover:hover) and (pointer:fine){html{overflow-y:scroll}}

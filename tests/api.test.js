@@ -328,3 +328,18 @@ test('Configuration: connection string fallbacks used by Vercel integrations', (
     Object.assign(process.env, keep);
   }
 });
+
+test('Configuration: on Vercel without a Blob store, uploads fail with a clear message and nothing is half-saved', async () => {
+  process.env.VERCEL = '1';
+  try {
+    const login = await call('POST', '/auth/login', { body: { email: B.email, password: B.password } });
+    const t = login.data.token;
+    const before = (await call('GET', '/pets', { token: t })).data.length;
+    const r = await call('POST', '/pets', { token: t, body: { name: 'Ảnh', species: 'Mèo', gender: 'Cái', photo: pngDataUrl } });
+    assert.equal(r.status, 500);
+    assert.match(r.data.error, /BLOB_READ_WRITE_TOKEN/); // shown to the user as-is
+    assert.equal((await call('GET', '/pets', { token: t })).data.length, before);
+    const ok = await call('POST', '/pets', { token: t, body: { name: 'Không ảnh', species: 'Mèo', gender: 'Cái' } });
+    assert.equal(ok.status, 201, 'a pet without photo still saves');
+  } finally { delete process.env.VERCEL; }
+});

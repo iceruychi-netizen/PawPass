@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<div id="app"></div>
+<main id="app"></main>
 <noscript>PawPass cần bật JavaScript để hoạt động.</noscript>
 
 <!-- UI template carried over from the approved Step 1 prototype (rendered by js/runtime.js). -->
@@ -39,7 +39,7 @@
     <div class="stickers">
       <div class="stk stk-1">
         <div class="stk-art" aria-hidden="true">
-          <img class="stkcat" src="/assets/0aac20424488808bb687fe0bf895c0a7.png" alt="" width="58" height="42" style="width:58px;height:auto">
+          <img class="stkcat" src="/assets/0aac20424488808bb687fe0bf895c0a7.webp" alt="" width="58" height="42" style="width:58px;height:auto">
           <span class="bars"><i style="width:90%"></i><i style="width:70%"></i><i style="width:80%"></i></span>
         </div>
         <span class="stk-cap">Hồ sơ từng bé</span>
@@ -59,7 +59,7 @@
         <span class="stk-sub">JPG, PNG, PDF — tìm lại trong vài giây</span>
       </div>
     </div>
-    <div class="welcome hide-sm" aria-hidden="true"><img class="wdog" src="/assets/32a20f51c5b0015abaaeb38b6cb7d81e.png" alt=""><span class="rig wavecat"><img class="rp rp-tail" src="/assets/4a42cfb3bb6bc9f052f88649768da6cd.png" alt=""><img class="rp rp-body" src="/assets/007cdd15ec302769ce9a82fa462e75e7.png" alt=""><img class="rp rp-legL" src="/assets/8475cc7b850252a4518883a6b1425683.png" alt=""><img class="rp rp-legR" src="/assets/cbb2c2516681a093d8c332b015c77ec6.png" alt=""><img class="rp rp-arm" src="/assets/6bf23b2723dce08abf9942318fb082b4.png" alt=""></span>
+    <div class="welcome hide-sm" aria-hidden="true"><img class="wdog" src="/assets/32a20f51c5b0015abaaeb38b6cb7d81e.webp" alt=""><span class="rig wavecat"><img class="rp rp-tail" src="/assets/4a42cfb3bb6bc9f052f88649768da6cd.webp" alt=""><img class="rp rp-body" src="/assets/007cdd15ec302769ce9a82fa462e75e7.webp" alt=""><img class="rp rp-legL" src="/assets/8475cc7b850252a4518883a6b1425683.webp" alt=""><img class="rp rp-legR" src="/assets/cbb2c2516681a093d8c332b015c77ec6.webp" alt=""><img class="rp rp-arm" src="/assets/6bf23b2723dce08abf9942318fb082b4.webp" alt=""></span>
       <svg width="250" height="104" viewBox="0 0 250 104">
         <g stroke="#3A2E28" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 100 H242" fill="none"></path>
@@ -69,7 +69,7 @@
   </section>
 
   <div class="cover-wrap">
-    <div class="peek peek-imgs" aria-hidden="true"><img src="/assets/0aac20424488808bb687fe0bf895c0a7.png" alt="" width="186" height="136"><img src="/assets/340faf1d5e7b89f669fc952729e58a6d.png" alt="" width="186" height="136"></div>
+    <div class="peek peek-imgs" aria-hidden="true"><img src="/assets/0aac20424488808bb687fe0bf895c0a7.webp" alt="" width="186" height="136"><img src="/assets/340faf1d5e7b89f669fc952729e58a6d.webp" alt="" width="186" height="136"></div>
     <section class="cover">
       <div class="cover-in">
         <div class="cover-title">
@@ -221,8 +221,8 @@
       <aside class="notepad" aria-label="Cần để ý">
         <button type="button" class="sleeper" onClick="{{H.pokeSleeper}}" aria-label="Chú mèo đang ngủ — bấm để đánh thức">
           <sc-if value="{{sleeper.awake}}" hint-placeholder-val="{{ false }}"><span class="bubble" style="bottom:auto;top:-36px;left:30%">{{sleeper.line}}</span></sc-if>
-          <sc-if value="{{sleeper.asleep}}" hint-placeholder-val="{{ true }}"><span class="rig sleep"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.png" alt=""><img class="rp rp-body" src="/assets/4c178692906419cbb35abc276342e455.png" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.png" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.png" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.png" alt=""></span></sc-if>
-          <sc-if value="{{sleeper.awake}}" hint-placeholder-val="{{ false }}"><span class="rig sleep awake"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.png" alt=""><img class="rp rp-body" src="/assets/247084d3c08a6eef1fa33e13fe06be0e.png" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.png" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.png" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.png" alt=""></span></sc-if>
+          <sc-if value="{{sleeper.asleep}}" hint-placeholder-val="{{ true }}"><span class="rig sleep"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.webp" alt=""><img class="rp rp-body" src="/assets/4c178692906419cbb35abc276342e455.webp" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.webp" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.webp" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.webp" alt=""></span></sc-if>
+          <sc-if value="{{sleeper.awake}}" hint-placeholder-val="{{ false }}"><span class="rig sleep awake"><img class="rp rp-tail" src="/assets/6b3f5680d1a64004327195845871f724.webp" alt=""><img class="rp rp-body" src="/assets/247084d3c08a6eef1fa33e13fe06be0e.webp" alt=""><img class="rp rp-legL" src="/assets/7637ffa01a3ae55f01ee5103f60790e0.webp" alt=""><img class="rp rp-legR" src="/assets/6917dd2c030c8bc14b7220cb1a34a85d.webp" alt=""><img class="rp rp-arm" src="/assets/67184b3746ec4595ade560d393ececf6.webp" alt=""></span></sc-if>
           <sc-if value="{{sleeper.asleep}}" hint-placeholder-val="{{ true }}"><span class="zz" aria-hidden="true" style="position:absolute;left:4px;top:-6px">z z</span></sc-if>
         </button>
 
@@ -497,7 +497,7 @@
     <div style="display:flex;gap:6px;flex-wrap:wrap" role="group" aria-label="Lọc theo loại dữ liệu">
       <sc-for list="{{searchChips}}" as="c" hint-placeholder-count="5"><button type="button" class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.label}}</button></sc-for>
     </div>
-    <sc-if value="{{searchIdle}}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:16px"><img src="/assets/6f21ee961c0b8ff919470721e02b6978.png" alt="" aria-hidden="true" style="width:90px;height:90px;border-radius:50%;border:2.5px solid #3A2E28;background:#FDE3BC;object-fit:cover"><p class="hand muted" style="margin:0;font-size:22px">Gõ vài chữ, các bé sẽ đi tìm giúp bạn…</p></div></sc-if>
+    <sc-if value="{{searchIdle}}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:16px"><img src="/assets/6f21ee961c0b8ff919470721e02b6978.webp" alt="" aria-hidden="true" style="width:90px;height:90px;border-radius:50%;border:2.5px solid #3A2E28;background:#FDE3BC;object-fit:cover"><p class="hand muted" style="margin:0;font-size:22px">Gõ vài chữ, các bé sẽ đi tìm giúp bạn…</p></div></sc-if>
     <sc-if value="{{resultsEmpty}}" hint-placeholder-val="{{ false }}">
       <div class="card empty"><h3 class="h2">Không có kết quả</h3><p class="muted" style="margin:0">Không tìm thấy dữ liệu khớp với “{{searchQuery}}”.</p></div>
     </sc-if>
@@ -876,15 +876,15 @@
 
     <div class="runner r1">
       <span class="dust"></span><span class="dust d2"></span>
-      <span class="scat dog srun"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.png" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.png" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.png" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.png" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.png" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.png" alt="" style="transform-origin:38.2% 82.4%"></span></span>
+      <span class="scat dog srun"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.webp" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.webp" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.webp" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.webp" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.webp" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.webp" alt="" style="transform-origin:38.2% 82.4%"></span></span>
     </div>
     <div class="runner r2">
       <span class="dust"></span><span class="dust d2"></span>
-      <span class="scat srun"><span class="scat-in"><img class="sp sp-tail" src="/assets/2b765f6182a8f9779d8e2f721ce60e8c.png" alt=""><img class="sp sp-bl" src="/assets/35108e65bac65cac88e507578534e3a9.png" alt=""><img class="sp sp-br" src="/assets/36144e5453ac09019df75b0489a7615c.png" alt=""><img class="sp sp-body" src="/assets/fb5c707c4ae34315adb329d14fe2585a.png" alt=""><img class="sp sp-fl" src="/assets/55c94157a4759198cf9851efc3385f07.png" alt=""><img class="sp sp-fr" src="/assets/d70af102f81c72a61744c02001f84388.png" alt=""></span></span>
+      <span class="scat srun"><span class="scat-in"><img class="sp sp-tail" src="/assets/2b765f6182a8f9779d8e2f721ce60e8c.webp" alt=""><img class="sp sp-bl" src="/assets/35108e65bac65cac88e507578534e3a9.webp" alt=""><img class="sp sp-br" src="/assets/36144e5453ac09019df75b0489a7615c.webp" alt=""><img class="sp sp-body" src="/assets/fb5c707c4ae34315adb329d14fe2585a.webp" alt=""><img class="sp sp-fl" src="/assets/55c94157a4759198cf9851efc3385f07.webp" alt=""><img class="sp sp-fr" src="/assets/d70af102f81c72a61744c02001f84388.webp" alt=""></span></span>
     </div>
     <div class="runner r3">
       <span class="dust"></span><span class="dust d2"></span>
-      <span class="scat srun w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.png" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.png" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.png" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.png" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.png" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.png" alt=""></span></span>
+      <span class="scat srun w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.webp" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.webp" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.webp" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.webp" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.webp" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.webp" alt=""></span></span>
     </div>
   </div>
   <h2 class="h1" style="font-size:clamp(28px,4vw,38px)">Đang gọi các bé về<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h2>
@@ -907,7 +907,7 @@
     <sc-if value="{{bub.c1}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.c1}}</span></sc-if>
     <div class="flipper">
       <button type="button" class="{{critCls.c1}}" onClick="{{H.pokeC1}}" aria-label="Mèo cam đi dạo — bấm để chơi">
-        <span class="scat"><span class="scat-in"><img class="sp sp-tail" src="/assets/9c6bceea5f948e98e6f6ab7d2240a5c5.png" alt=""><img class="sp sp-bl" src="/assets/863c361c635a7688366ab440dd2ffa83.png" alt=""><img class="sp sp-br" src="/assets/bcccc5e2ecc6f10d3e8ed4a033a5ad26.png" alt=""><img class="sp sp-body" src="/assets/542182c7eebbaec2c91cb125824045ce.png" alt=""><img class="sp sp-fl" src="/assets/c3c65f77a6bb45b7cc35519b5a75a1f2.png" alt=""><img class="sp sp-fr" src="/assets/8f07238589138869dce7786e0f258776.png" alt=""></span></span>
+        <span class="scat"><span class="scat-in"><img class="sp sp-tail" src="/assets/9c6bceea5f948e98e6f6ab7d2240a5c5.webp" alt=""><img class="sp sp-bl" src="/assets/863c361c635a7688366ab440dd2ffa83.webp" alt=""><img class="sp sp-br" src="/assets/bcccc5e2ecc6f10d3e8ed4a033a5ad26.webp" alt=""><img class="sp sp-body" src="/assets/542182c7eebbaec2c91cb125824045ce.webp" alt=""><img class="sp sp-fl" src="/assets/c3c65f77a6bb45b7cc35519b5a75a1f2.webp" alt=""><img class="sp sp-fr" src="/assets/8f07238589138869dce7786e0f258776.webp" alt=""></span></span>
       </button>
     </div>
   </div>
@@ -916,7 +916,7 @@
     <sc-if value="{{bub.c2}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.c2}}</span></sc-if>
     <div class="flipper">
       <button type="button" class="{{critCls.c2}}" onClick="{{H.pokeC2}}" aria-label="Mèo mun đi dạo — bấm để chơi">
-        <span class="scat w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.png" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.png" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.png" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.png" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.png" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.png" alt=""></span></span>
+        <span class="scat w2"><span class="scat-in"><img class="sp sp-tail" src="/assets/d4c81f3a4aba59053039dca6b2ecdab4.webp" alt=""><img class="sp sp-bl" src="/assets/5848697b833807dc325b875b8f77831c.webp" alt=""><img class="sp sp-br" src="/assets/48c6bf6e0a12cd2daa0ed1da59cc0fa6.webp" alt=""><img class="sp sp-body" src="/assets/4cc8defb276558ab2d6e062e0a58e639.webp" alt=""><img class="sp sp-fl" src="/assets/6cb33b1f24cfc63793f8f9fbc8d7506e.webp" alt=""><img class="sp sp-fr" src="/assets/2db580be475513ccf5bd33233866eff4.webp" alt=""></span></span>
       </button>
     </div>
   </div>
@@ -925,7 +925,7 @@
     <sc-if value="{{bub.d1}}" hint-placeholder-val="{{ false }}"><span class="bubble">{{bub.d1}}</span></sc-if>
     <div class="flipper">
       <button type="button" class="{{critCls.d1}}" onClick="{{H.pokeD1}}" aria-label="Cún con đi dạo — bấm để chơi">
-        <span class="scat dog"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.png" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.png" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.png" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.png" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.png" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.png" alt="" style="transform-origin:38.2% 82.4%"></span></span>
+        <span class="scat dog"><span class="scat-in"><img class="sp sp-bl" src="/assets/34fa3d20ab2aa593842d4e04628cad77.webp" alt="" style="transform-origin:54.9% 86%"><img class="sp sp-br" src="/assets/4890f9c7d48ee81f0cf7f4d0101c0163.webp" alt="" style="transform-origin:86.9% 77.9%"><img class="sp sp-body" src="/assets/826390a4d66f344ab40fb7fdff1f8ed8.webp" alt=""><img class="sp sp-tail" src="/assets/9460c06c24eca96ba20097365bf18a88.webp" alt="" style="transform-origin:73.9% 39.5%"><img class="sp sp-fl" src="/assets/6dc9808652c526353df9fed7334e0ac7.webp" alt="" style="transform-origin:17.3% 80.4%"><img class="sp sp-fr" src="/assets/913ee90e22a722c92645bfe8487085fc.webp" alt="" style="transform-origin:38.2% 82.4%"></span></span>
       </button>
     </div>
   </div>

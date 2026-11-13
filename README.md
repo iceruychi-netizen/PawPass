@@ -52,11 +52,11 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 ## Deploy lên Vercel
 
 1. Import repo GitHub vào Vercel (**Add New → Project**). Framework Preset để **Other**, không cần Build Command.
-2. **Storage → Create Database → Neon (Postgres)** rồi bấm **Connect Project** và chọn cả 3 môi trường. Vercel tự thêm biến `DATABASE_URL`.
-   Code cũng nhận `POSTGRES_URL` và biến có tiền tố riêng (vd. `STORAGE_DATABASE_URL`).
-3. **Storage → Create → Blob** rồi **Connect Project**. Vercel tự thêm `BLOB_READ_WRITE_TOKEN`.
-4. **Settings → Environment Variables**: thêm `JWT_SECRET` (chuỗi ngẫu nhiên tối thiểu 32 ký tự) cho cả 3 môi trường.
-5. **Deployments → ⋯ → Redeploy**. Biến môi trường chỉ có hiệu lực ở lần deploy *sau* khi thêm.
+2. **Storage → Create Database → Neon (Postgres)** → **Connect Project**: chọn `pawpass-hosothucung`, **All Environments**, ô **Custom Prefix** gõ `DATABASE` (để có biến `DATABASE_URL`), không tích "Create database branch".
+3. **Storage → Create → Blob**: chọn quyền truy cập **Public** (bắt buộc: ảnh thú cưng hiển thị trực tiếp; kho Private sẽ báo lỗi `access must be "public"`).
+   Khi **Connect Project**: prefix để trống và **tích "Add a read-write token env var to this connection"** để có biến `BLOB_READ_WRITE_TOKEN`.
+4. Thêm `JWT_SECRET` (chuỗi ngẫu nhiên tối thiểu 32 ký tự, All Environments). Có thể thêm ở **Settings → Environment Variables** của project, hoặc ở trang Environment Variables của team → tab **Shared** (nhớ chọn project ở ô **Link to Projects**).
+5. Deploy lại: biến môi trường chỉ có hiệu lực ở lần deploy *sau* khi thêm. Nếu nút **Redeploy** treo, sửa một chữ trong `README.md` trên GitHub rồi commit — Vercel tự deploy.
 
 Không cần tự tạo bảng: API tạo bảng (`CREATE TABLE IF NOT EXISTS`) ở request đầu tiên.
 Muốn tạo tài khoản demo thì chạy `DATABASE_URL="postgres://..." npm run db:seed` từ máy bạn.
@@ -67,6 +67,7 @@ Muốn tạo tài khoản demo thì chạy `DATABASE_URL="postgres://..." npm ru
 | --- | --- | --- |
 | Máy chủ chưa được cấu hình cơ sở dữ liệu | Không có `DATABASE_URL` | Làm lại bước 2, rồi Redeploy |
 | Máy chủ chưa được cấu hình JWT_SECRET | Thiếu hoặc ngắn hơn 32 ký tự | Làm lại bước 4, rồi Redeploy |
+| Không lưu được ảnh/tài liệu lên Vercel Blob: … | Thiếu token hoặc kho Blob để Private | Làm lại bước 3 (kho **Public**, tích ô token), rồi deploy lại |
 | Không kết nối được cơ sở dữ liệu | Sai chuỗi kết nối, DB bị xóa/tạm dừng | Kiểm tra Neon dashboard; xem log ở **Deployments → Functions/Logs** (dòng `[api] … `) |
 
 ## Chạy local
@@ -113,3 +114,17 @@ Test giao diện kiểm tra toàn bộ luồng chính, không có lỗi console 
 - Tài liệu tối đa 4 MB do Vercel giới hạn request ở 4,5 MB.
 - Ảnh thú cưng và ảnh đại diện nằm ở URL Blob công khai nhưng khó đoán. Tài liệu thì luôn đi qua API có kiểm tra quyền.
 - Tìm kiếm lọc phía client trên dữ liệu đã tải, phù hợp quy mô dữ liệu của một người dùng.
+
+## Lịch sử chỉnh sửa sau bản đầu tiên
+
+| Vấn đề | Đã sửa ở file |
+| --- | --- |
+| Web báo "Không kết nối được cơ sở dữ liệu" khi biến DB có tên khác | `server/db.js` nhận `DATABASE_URL`, `POSTGRES_URL` và biến có tiền tố riêng; tự tạo bảng ở lần chạy đầu (`server/schema.js`) |
+| Lỗi cấu hình hiện chung chung "Lỗi máy chủ" | `server/app.js`, `server/security.js`: báo rõ thiếu `DATABASE_URL` / `JWT_SECRET` |
+| Không lưu được ảnh, tài liệu trên Vercel | `server/storage.js`: báo rõ thiếu Blob hoặc lỗi Blob; thử chế độ private; `package.json` dùng `@vercel/blob` bản mới |
+| Màn hình giật liên tục (chó mèo đi dạo) | `public/css/app.css`: chuyển hiệu ứng đi bộ sang `transform` |
+| Thẻ, nút nhảy lên khi rê chuột / chạm | `public/css/app.css`: bỏ hiệu ứng nhảy khi hover |
+| Thanh cuộn hiện/ẩn làm trang co giãn; iPhone tự phóng to khi chạm ô nhập | `public/css/app.css`: giữ chỗ thanh cuộn, chữ ô nhập 16px trên điện thoại |
+
+Kiểm thử bản cuối: 39 test API và toàn bộ test giao diện đều qua.
+
