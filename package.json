@@ -12,11 +12,17 @@
     "start": "node server/local.js",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
-    "test": "node --test --test-concurrency=1 tests/*.test.js",
-    "test:ui": "node tests/ui/run-ui.js"
+    "test": "node --test --test-concurrency=1 tests/unit/*.test.js tests/*.test.js",
+    "test:ui": "node tests/ui/run-ui.js",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "build:css": "tailwindcss -c tailwind.config.js -i src/tailwind.css -o public/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i src/tailwind.css -o public/css/tailwind.css --watch"
   },
   "dependencies": {
     "@vercel/blob": ">=0.27.3",
     "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
   }
 }
