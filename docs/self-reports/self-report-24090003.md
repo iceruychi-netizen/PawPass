@@ -1,7 +1,5 @@
 # Self-Report — Final Project
 
-> Bản điền sẵn từ phân công và lịch sử commit. **Nguyễn Hữu Triết kiểm tra lại cho đúng sự thật**, điền các chỗ *(…)*, xóa các dòng `>` rồi commit.
-
 ---
 
 ## Thông tin cá nhân
@@ -108,7 +106,7 @@ Web báo "không kết nối được cơ sở dữ liệu", rồi thiếu `JWT_
 - [`3553678`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/3553678) — Google Analytics, Sentry (`public/js/monitoring.js`, `server/monitor.js`)
 - Ảnh WebP và thẻ `<main>` đã có từ lần đưa lên đầu tiên [`a735c4d`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/a735c4d)
 - Ảnh Lighthouse trước (13/11): `docs/images/lighthouse-truoc-van-de.png`, `lighthouse-truoc-con-lai.png` · sau (20/11, 100/100/100/100): `docs/images/lighthouse-sau-desktop.jpg`, `lighthouse-sau-mobile.jpg`
-- *(ảnh dashboard GA / Sentry)*
+- Google Analytics nhận người dùng thật: `docs/images/ga-realtime.png` · Sentry nhận lỗi thử: `docs/images/sentry-issues.png`
 
 **Khó khăn gặp phải:**
 
@@ -136,15 +134,13 @@ Lighthouse vẫn báo mục đỏ sau khi sửa; phải phân biệt mục bị 
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn)*
+Web nhóm 5 chưa đưa lên mạng nên chỉ góp ý được trên bản đang làm. Với góp ý "mèo quá to làm giảm điểm Lighthouse" của nhóm 2, phải cân nhắc giữa tốc độ và linh vật của nhóm; cuối cùng giữ nguyên chú mèo và tối ưu bằng cách khác (ảnh WebP, chuyển động bằng `transform`).
 
 **Đánh giá bản thân:** 9/10
 
 ---
 
 ## Khai báo sử dụng AI
-
-> Dự án dùng Claude (Anthropic) làm AI Coding Agent (xem `CLAUDE.md`, `PLAN.md`). Ghi trung thực phần mình nhờ AI và phần mình tự làm; thầy sẽ hỏi để kiểm tra mức độ hiểu.
 
 | Phần / file | Công cụ AI | AI làm gì | Tôi đã làm gì với phần đó |
 |---|---|---|---|

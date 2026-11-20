@@ -1,7 +1,5 @@
 # Self-Report — Final Project
 
-> Bản điền sẵn từ phân công và lịch sử commit. **Đào Duy Quang kiểm tra lại cho đúng sự thật**, điền các chỗ *(…)*, xóa các dòng `>` rồi commit.
-
 ---
 
 ## Thông tin cá nhân
@@ -25,11 +23,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -45,11 +43,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(xem commit ở Task 3)*
+- `public/js/validators.js` nằm trong commit [`d98340c`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/d98340c) (xem Task 3)
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -70,7 +68,7 @@
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -86,11 +84,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -98,31 +96,29 @@
 
 ## Task 5 — Peer Review
 
-**Tuần:** *(VD: Tuần 3, ngày DD/MM – DD/MM)*
+**Tuần:** —
 
 **Công việc đã làm:**
 
-*(Nhóm nào đã review, feedback đã gửi, feedback nhận được và cách xử lý)*
+Không tham gia trực tiếp. Phần review nhóm 2, nhóm 5 và xử lý góp ý do Hữu Triết thực hiện (xem Task 5 trong `README.md`).
 
 **Bằng chứng đóng góp:**
 
-*(Link feedback, commit xử lý feedback)*
+—
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn)*
+—
 
-**Đánh giá bản thân:** *(1–10)*
+**Đánh giá bản thân:** —
 
 ---
 
 ## Khai báo sử dụng AI
 
-> Dự án dùng Claude (Anthropic) làm AI Coding Agent (xem `CLAUDE.md`, `PLAN.md`). Ghi trung thực phần mình nhờ AI và phần mình tự làm; thầy sẽ hỏi để kiểm tra mức độ hiểu.
-
 | Phần / file | Công cụ AI | AI làm gì | Tôi đã làm gì với phần đó |
 |---|---|---|---|
-| `db/schema.sql`, `server/db.js`, `public/js/validators.js`, `tests/` | Claude | Viết code và test | *(VD: đọc hiểu, đưa lên repo, chạy thử)* |
+| `db/schema.sql`, `server/db.js`, `public/js/validators.js`, `tests/` | Claude | Viết code và test | Đưa phần này lên repo ([`d98340c`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/d98340c)), đọc hiểu để trình bày được |
 
 ---
 
@@ -130,7 +126,7 @@
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
 
-*(3–5 câu: phần database / test bạn đã đưa lên và hiểu được gì, phần tự hào, kỹ năng học được)*
+Mình phụ trách phần 5: database, kiểm tra dữ liệu và test API. Mình đưa schema 5 bảng, kết nối database, quy tắc kiểm tra dữ liệu và test API lên repo (tài khoản `hhuy82571-alt`), đọc hiểu các bảng và khóa ngoại xóa dây chuyền. Mình học được cách thiết kế bảng theo ERD và cách viết test để tự kiểm tra API.
 
 **Ước tính % đóng góp so với cả nhóm:** ~15%
 

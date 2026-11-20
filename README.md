@@ -474,7 +474,11 @@ Người review: Nguyễn Hữu Triết.
 | Bấm F5 ở một trang thì giao diện bị giật: nhảy qua trang đăng ký / đăng nhập rồi mới về trang đang xem | Nhóm 2 | Đã implement | Ghi nhớ trang người dùng đang ở và phiên đăng nhập, F5 mở lại đúng trang đó ngay — [`9725d89`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/9725d89) |
 | Chú mèo quá to, ảnh lớn khi chuyển động làm giảm điểm Lighthouse | Nhóm 2 | Không implement | Chú mèo là **linh vật** của PawPass, được nhóm tổng hợp từ nhiều bản thiết kế để tạo cảm giác gần gũi với người dùng, nên nhóm giữ nguyên kích thước. Nhóm giảm ảnh hưởng tới tốc độ theo cách khác: ảnh WebP, chuyển động bằng `transform` (Lighthouse hiện đạt 100 ở cả 4 mục) |
 
-*(Chèn ảnh trước / sau của các thay đổi đã implement, nếu có)*
+**Trước / sau khi sửa góp ý về màn hình chờ:**
+
+| Trước (13/11): hết màn hình chờ, trang chủ vẫn còn "Đang gọi các bé về…" | Sau: hết màn hình chờ là trang chủ đã có đủ thông tin |
+|---|---|
+| ![Trước khi sửa](docs/images/gop-y-truoc-man-hinh-cho.png) | ![Sau khi sửa](docs/images/trang-chu.png) |
 
 ---
 

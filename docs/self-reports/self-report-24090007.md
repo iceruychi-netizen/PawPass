@@ -1,7 +1,5 @@
 # Self-Report — Final Project
 
-> Bản điền sẵn từ phân công và lịch sử commit. **Nguyễn Thế Dũng kiểm tra lại cho đúng sự thật**, điền các chỗ *(…)*, xóa các dòng `>` rồi commit.
-
 ---
 
 ## Thông tin cá nhân
@@ -25,11 +23,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -50,7 +48,7 @@
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -66,11 +64,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -86,11 +84,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -98,31 +96,29 @@
 
 ## Task 5 — Peer Review
 
-**Tuần:** *(VD: Tuần 3, ngày DD/MM – DD/MM)*
+**Tuần:** —
 
 **Công việc đã làm:**
 
-*(Nhóm nào đã review, feedback đã gửi, feedback nhận được và cách xử lý)*
+Không tham gia trực tiếp. Phần review nhóm 2, nhóm 5 và xử lý góp ý do Hữu Triết thực hiện (xem Task 5 trong `README.md`).
 
 **Bằng chứng đóng góp:**
 
-*(Link feedback, commit xử lý feedback)*
+—
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn)*
+—
 
-**Đánh giá bản thân:** *(1–10)*
+**Đánh giá bản thân:** —
 
 ---
 
 ## Khai báo sử dụng AI
 
-> Dự án dùng Claude (Anthropic) làm AI Coding Agent (xem `CLAUDE.md`, `PLAN.md`). Ghi trung thực phần mình nhờ AI và phần mình tự làm; thầy sẽ hỏi để kiểm tra mức độ hiểu.
-
 | Phần / file | Công cụ AI | AI làm gì | Tôi đã làm gì với phần đó |
 |---|---|---|---|
-| `public/js/app.js`, `runtime.js`, `site.js`, `monitoring.js` | Claude | Viết code | *(VD: đọc hiểu, đưa lên repo, thử trên web)* |
+| `public/js/app.js`, `runtime.js`, `site.js`, `monitoring.js` | Claude | Viết code | Đưa phần này lên repo ([`e5c84fa`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/e5c84fa)), đọc hiểu để trình bày được |
 
 ---
 
@@ -130,7 +126,7 @@
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
 
-*(3–5 câu: phần logic frontend bạn đã đưa lên và hiểu được gì, phần tự hào, kỹ năng học được)*
+Mình phụ trách phần 3: logic frontend. Mình đưa `app.js` và `runtime.js` lên repo và đọc hiểu luồng đăng nhập → tải dữ liệu → hiển thị lên màn hình. Mình học được cách một trang web gọi API và đổi trang bằng `#/...` mà không phải tải lại cả trang.
 
 **Ước tính % đóng góp so với cả nhóm:** ~15%
 

@@ -1,7 +1,5 @@
 # Self-Report — Final Project
 
-> Bản điền sẵn từ phân công và lịch sử commit. **Nguyễn Phước Thành Đạt kiểm tra lại cho đúng sự thật**, điền các chỗ *(…)*, xóa các dòng `>` rồi commit.
-
 ---
 
 ## Thông tin cá nhân
@@ -25,11 +23,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -41,17 +39,17 @@
 
 **Công việc đã làm:**
 
-- Không phụ trách giao diện. *(ghi phần đã hỗ trợ nếu có)*
+- Không phụ trách giao diện.
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
-**Đánh giá bản thân:** *(không tham gia task này — để trống hoặc tự chấm)*
+**Đánh giá bản thân:** —
 
 ---
 
@@ -70,7 +68,7 @@
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -86,11 +84,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -98,31 +96,29 @@
 
 ## Task 5 — Peer Review
 
-**Tuần:** *(VD: Tuần 3, ngày DD/MM – DD/MM)*
+**Tuần:** —
 
 **Công việc đã làm:**
 
-*(Nhóm nào đã review, feedback đã gửi, feedback nhận được và cách xử lý)*
+Không tham gia trực tiếp. Phần review nhóm 2, nhóm 5 và xử lý góp ý do Hữu Triết thực hiện (xem Task 5 trong `README.md`).
 
 **Bằng chứng đóng góp:**
 
-*(Link feedback, commit xử lý feedback)*
+—
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn)*
+—
 
-**Đánh giá bản thân:** *(1–10)*
+**Đánh giá bản thân:** —
 
 ---
 
 ## Khai báo sử dụng AI
 
-> Dự án dùng Claude (Anthropic) làm AI Coding Agent (xem `CLAUDE.md`, `PLAN.md`). Ghi trung thực phần mình nhờ AI và phần mình tự làm; thầy sẽ hỏi để kiểm tra mức độ hiểu.
-
 | Phần / file | Công cụ AI | AI làm gì | Tôi đã làm gì với phần đó |
 |---|---|---|---|
-| `server/*.js`, `api/index.js` | Claude | Viết code API, bảo mật, lưu tệp | *(VD: đọc hiểu, đưa lên repo, thử các chức năng trên web)* |
+| `server/*.js`, `api/index.js` | Claude | Viết code API, bảo mật, lưu tệp | Đưa phần này lên repo ([`14d7456`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/14d7456)), đọc hiểu để trình bày được |
 
 ---
 
@@ -130,7 +126,7 @@
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
 
-*(3–5 câu: phần backend bạn đã đưa lên và hiểu được gì, phần tự hào, kỹ năng học được)*
+Mình phụ trách phần 4: backend API và bảo mật. Mình đưa các file máy chủ (`server/`, `api/index.js`) và README đầu tiên lên repo, đọc hiểu cách API kiểm tra token đăng nhập và quyền sở hữu (người khác mở dữ liệu bị chặn 403). Mình học được vì sao mật khẩu phải được băm chứ không lưu dạng chữ thường.
 
 **Ước tính % đóng góp so với cả nhóm:** ~15%
 

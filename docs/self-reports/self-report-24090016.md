@@ -1,7 +1,5 @@
 # Self-Report — Final Project
 
-> Bản điền sẵn từ phân công và lịch sử commit. **Đinh Phùng Duy Huy kiểm tra lại cho đúng sự thật**, điền các chỗ *(…)*, xóa các dòng `>` rồi commit.
-
 ---
 
 ## Thông tin cá nhân
@@ -25,11 +23,11 @@
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -68,11 +66,11 @@ Lần đầu upload bị lồng cả thư mục zip (`2-phong-cach-cau-hinh-test
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -88,11 +86,11 @@ Lần đầu upload bị lồng cả thư mục zip (`2-phong-cach-cau-hinh-test
 
 **Bằng chứng đóng góp:**
 
-- *(link nếu có)*
+- Không có commit riêng cho task này
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn — có thể để trống nếu không có)*
+—
 
 **Đánh giá bản thân:** 8/10
 
@@ -100,31 +98,29 @@ Lần đầu upload bị lồng cả thư mục zip (`2-phong-cach-cau-hinh-test
 
 ## Task 5 — Peer Review
 
-**Tuần:** *(VD: Tuần 3, ngày DD/MM – DD/MM)*
+**Tuần:** —
 
 **Công việc đã làm:**
 
-*(Nhóm nào đã review, feedback đã gửi, feedback nhận được và cách xử lý)*
+Không tham gia trực tiếp. Phần review nhóm 2, nhóm 5 và xử lý góp ý do Hữu Triết thực hiện (xem Task 5 trong `README.md`).
 
 **Bằng chứng đóng góp:**
 
-*(Link feedback, commit xử lý feedback)*
+—
 
 **Khó khăn gặp phải:**
 
-*(Mô tả ngắn)*
+—
 
-**Đánh giá bản thân:** *(1–10)*
+**Đánh giá bản thân:** —
 
 ---
 
 ## Khai báo sử dụng AI
 
-> Dự án dùng Claude (Anthropic) làm AI Coding Agent (xem `CLAUDE.md`, `PLAN.md`). Ghi trung thực phần mình nhờ AI và phần mình tự làm; thầy sẽ hỏi để kiểm tra mức độ hiểu.
-
 | Phần / file | Công cụ AI | AI làm gì | Tôi đã làm gì với phần đó |
 |---|---|---|---|
-| `public/css/app.css`, `tests/ui/run-ui.js`, `vercel.json`, `package.json`, Tailwind | Claude | Viết code | *(VD: đọc hiểu, đưa lên repo, thử trên web)* |
+| `public/css/app.css`, `tests/ui/run-ui.js`, `vercel.json`, `package.json`, Tailwind | Claude | Viết code | Đưa phần này lên repo ([`5d98e0f`](https://github.com/iceruychi-netizen/PawPass-Hosothucung/commit/5d98e0f)), đọc hiểu để trình bày được |
 
 ---
 
@@ -132,7 +128,7 @@ Lần đầu upload bị lồng cả thư mục zip (`2-phong-cach-cau-hinh-test
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
 
-*(3–5 câu: phần 2 bạn đã đưa lên và hiểu được gì, phần tự hào, kỹ năng học được)*
+Mình phụ trách phần 2: CSS, cấu hình deploy và test giao diện. Mình đưa phần cấu hình (`package.json`, `vercel.json`, `.gitignore`, `.env.example`) lên repo; lần đầu upload nhầm cả thư mục zip nên phải xóa rồi upload lại. Mình đọc hiểu cách CSS chia 3 khổ màn hình và cách test giao diện tự bấm qua các trang. Mình học được cách đưa file lên GitHub đúng cấu trúc thư mục và cách Vercel dùng `vercel.json` để deploy.
 
 **Ước tính % đóng góp so với cả nhóm:** ~15%
 
