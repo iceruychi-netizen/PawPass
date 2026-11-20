@@ -10,7 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap"></noscript>
-<link rel="stylesheet" href="/css/app.css">
+<!-- app.css loads without blocking the first paint; the page stays hidden (on its own background colour) until it has arrived -->
+<style>html,body{margin:0;background:#FBF1DF}#app{visibility:hidden}</style>
+<link rel="preload" as="style" href="/css/app.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/css/app.css"></noscript>
 </head>
 <body>
 <main id="app"></main>
@@ -67,6 +70,7 @@
         </g>
       </svg>
     </div>
+    <p class="site-links"><a href="/gioi-thieu.html">Giới thiệu PawPass</a><span aria-hidden="true">·</span><a href="/lien-he.html">Liên hệ</a></p>
   </section>
 
   <div class="cover-wrap">
@@ -185,6 +189,9 @@
 
     <sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
       <div class="card empty" role="status"><span class="hand" style="font-size:20px">Đang gọi các bé về…</span></div>
+    </sc-if>
+    <sc-if value="{{loadErr}}" hint-placeholder-val="{{ false }}">
+      <div class="card empty" role="alert" style="display:flex;flex-direction:column;align-items:center;gap:10px"><span class="hand" style="font-size:20px">Máy chủ đang chậm, chưa tải được dữ liệu.</span><button type="button" class="btn btn-sm btn-p" onClick="{{H.reload}}">Thử lại</button></div>
     </sc-if>
 
     <sc-if value="{{loaded}}" hint-placeholder-val="{{ true }}">
@@ -460,6 +467,8 @@
             <sc-for list="{{dl}}" as="d" hint-placeholder-count="2">
               <article class="polaroid">
                 <sc-if value="{{d.showImg}}" hint-placeholder-val="{{ false }}"><img src="{{d.url}}" alt="{{d.file_name}}" style="width:100%;height:130px;object-fit:cover;border-radius:4px;border:2px solid #3A2E28;background:#FBF1DF"></sc-if>
+                <sc-if value="{{d.imgWait}}" hint-placeholder-val="{{ false }}"><div class="doc-ph" role="status">Đang tải ảnh…</div></sc-if>
+                <sc-if value="{{d.imgBad}}" hint-placeholder-val="{{ false }}"><div class="doc-ph">Chưa tải được ảnh<button type="button" class="btn btn-sm btn-flat" onClick="{{d.retry}}">Thử lại</button></div></sc-if>
                 <sc-if value="{{d.isPdf}}" hint-placeholder-val="{{ true }}">
                   <div style="height:130px;border-radius:4px;border:2px solid #3A2E28;background:#FCE3E0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
                     <svg width="38" height="38" viewBox="0 0 24 24" fill="#FFFCF5" stroke="#3A2E28" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path></svg>
@@ -547,6 +556,7 @@
   </div>
   </sc-if>
 
+  <footer class="site-foot"><span>© 2026 PawPass</span><a href="/gioi-thieu.html">Giới thiệu</a><a href="/lien-he.html">Liên hệ</a></footer>
 </main>
 </div>
 </sc-if>
@@ -872,8 +882,8 @@
         <path d="M85 54 c-3 -4 -8 -4 -8 -8 c0 -3 4 -4 8 -1 c4 -3 8 -2 8 1 c0 4 -5 4 -8 8 z" fill="#F7B9C6" stroke-width="2"></path>
       </g>
     </svg>
-    <svg class="heart" style="right:14%;bottom:150px;animation-delay:3.2s" width="26" height="24" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F7B9C6" stroke="#3A2E28" stroke-width="2.5"></path></svg>
-    <svg class="heart" style="right:22%;bottom:162px;animation-delay:3.6s" width="20" height="18" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F2A541" stroke="#3A2E28" stroke-width="2.5"></path></svg>
+    <svg class="heart" style="right:14%;bottom:150px;animation-delay:2.1s" width="26" height="24" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F7B9C6" stroke="#3A2E28" stroke-width="2.5"></path></svg>
+    <svg class="heart" style="right:22%;bottom:162px;animation-delay:2.4s" width="20" height="18" viewBox="0 0 26 24"><path d="M13 22 C5 16 2 12 2 8 C2 4 5 2 8 2 C10 2 12 3 13 5 C14 3 16 2 18 2 C21 2 24 4 24 8 C24 12 21 16 13 22 Z" fill="#F2A541" stroke="#3A2E28" stroke-width="2.5"></path></svg>
 
     <div class="runner r1">
       <span class="dust"></span><span class="dust d2"></span>
@@ -940,5 +950,6 @@
 <script defer src="/js/validators.js"></script>
 <script defer src="/js/runtime.js"></script>
 <script defer src="/js/app.js"></script>
+<script defer src="/js/monitoring.js"></script>
 </body>
 </html>

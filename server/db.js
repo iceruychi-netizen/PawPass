@@ -33,7 +33,7 @@ function getPool() {
   pool = new pg.Pool({
     connectionString: url,
     ssl: local || process.env.PGSSL === 'disable' ? false : { rejectUnauthorized: false },
-    max: Number(process.env.PG_POOL_MAX || 3),
+    max: Number(process.env.PG_POOL_MAX || 10), // the dashboard loads several lists at once
     idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 10000
   });

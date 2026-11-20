@@ -1,7 +1,9 @@
 'use strict';
 /*
  * File storage.
- *  - Production (BLOB_READ_WRITE_TOKEN set): Vercel Blob. The stored path is the blob URL.
+ *  - Production: Vercel Blob. The stored path is the blob URL.
+ *    Newer stores connect with OIDC (BLOB_STORE_ID, no token); older ones with BLOB_READ_WRITE_TOKEN.
+ *    The @vercel/blob SDK picks whichever is available, so both work.
  *  - Local development: ./uploads (UPLOAD_DIR). The stored path is "/uploads/<key>".
  * Documents are only ever served through GET /api/documents/:id/download (ownership checked).
  * Pet photos and avatars are images shown in <img> tags, so they are served directly.
@@ -10,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const useBlob = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+const useBlob = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 const localDir = () => path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads'));
 
 const MAGIC = {
@@ -54,7 +56,7 @@ async function put(key, buffer, contentType) {
     }
   }
   // Vercel's filesystem is read-only: without a Blob store there is nowhere to keep files.
-  if (process.env.VERCEL) throw storageError('Máy chủ chưa được cấu hình kho lưu ảnh/tài liệu (thiếu BLOB_READ_WRITE_TOKEN).');
+  if (process.env.VERCEL) throw storageError('Máy chủ chưa được cấu hình kho lưu ảnh/tài liệu (chưa gắn Vercel Blob: thiếu BLOB_STORE_ID / BLOB_READ_WRITE_TOKEN).');
   const rel = key.replace(/\.(\w+)$/, '-' + crypto.randomBytes(6).toString('hex') + '.$1');
   const abs = path.join(localDir(), rel);
   if (!abs.startsWith(localDir() + path.sep)) throw new Error('Invalid storage key');
@@ -65,11 +67,20 @@ async function put(key, buffer, contentType) {
 
 async function read(stored) {
   if (/^https:\/\//.test(stored)) {
-    // Private Blob stores need the token to read; public ones ignore the header.
-    const headers = process.env.BLOB_READ_WRITE_TOKEN ? { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } : {};
-    const r = await fetch(stored, { headers });
-    if (!r.ok) throw new Error('Blob fetch failed: ' + r.status);
-    return Buffer.from(await r.arrayBuffer());
+    // Public stores: a plain GET works.
+    const r = await fetch(stored);
+    if (r.ok) return Buffer.from(await r.arrayBuffer());
+    // Private stores: read through the SDK, which authenticates with OIDC or the read-write token.
+    const blob = require('@vercel/blob');
+    if (typeof blob.get === 'function') {
+      const file = await blob.get(stored, { access: 'private' });
+      if (file && file.stream) return Buffer.from(await new Response(file.stream).arrayBuffer());
+    }
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const r2 = await fetch(stored, { headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } });
+      if (r2.ok) return Buffer.from(await r2.arrayBuffer());
+    }
+    throw new Error('Blob fetch failed: ' + r.status);
   }
   return fs.promises.readFile(resolveLocal(stored));
 }

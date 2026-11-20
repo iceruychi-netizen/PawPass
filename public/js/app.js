@@ -41,7 +41,36 @@
   function ppMatch(q, arr) { if (!q) return true; for (var i = 0; i < arr.length; i++) { if (arr[i] && String(arr[i]).toLowerCase().indexOf(q) >= 0) return true; } return false; }
   function ppClone(o) { return JSON.parse(JSON.stringify(o)); }
   function storeGet() { try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; } }
-  function storeSet(v) { try { if (v) localStorage.setItem(TOKEN_KEY, v); else localStorage.removeItem(TOKEN_KEY); } catch (e) { /* private mode: session-only */ } }
+  function storeSet(v) { try { if (v) localStorage.setItem(TOKEN_KEY, v); else { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(CACHE_KEY); } } catch (e) { /* private mode: session-only */ } }
+  /* Last loaded data of the signed-in user, so a page reload shows the dashboard at once and refreshes it in the background. Cleared on logout. */
+  var CACHE_KEY = 'pawpass.cache';
+  function cacheGet() { try { var c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); return c && c.user ? c : null; } catch (e) { return null; } }
+  function cacheSet(c) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch (e) { /* quota or private mode: just no cache */ } }
+
+  /* Shrink a photo before upload (max 800px, JPEG): a 2 MB phone photo becomes ~100 KB,
+     so uploads are fast and pages don't decode huge images. Falls back to the original file. */
+  function ppShrink(file, done) {
+    var rd = new FileReader();
+    rd.onload = function () {
+      var orig = rd.result, img = new Image();
+      img.onload = function () {
+        try {
+          var max = 800, k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+          var w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+          var c = document.createElement('canvas'); c.width = w; c.height = h;
+          var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); g.drawImage(img, 0, 0, w, h);
+          var out = c.toDataURL('image/jpeg', 0.82);
+          done(out.length < orig.length ? out : orig);
+        } catch (e) { done(orig); }
+      };
+      img.onerror = function () { done(orig); };
+      img.src = orig;
+    };
+    rd.readAsDataURL(file);
+  }
+
+  /* Google Analytics (public/js/monitoring.js): chỉ gửi tên sự kiện, không gửi dữ liệu hồ sơ. */
+  function ppTrack(name, params) { if (window.ppTrack) window.ppTrack(name, params); }
 
   class Component extends window.PawPassRuntime.DCLogic {
     constructor(props) {
@@ -49,7 +78,10 @@
       this.token = null;
       this.files = {};        // document id → object URL (fetched through the authorised download endpoint)
       this.filePending = {};
+      this.fileQueue = []; this.fileActive = 0; this.fileTries = {};
       this.toastSeq = 0;
+      this.pending = 0;       // requests in flight (drives the top loading bar)
+      this.cachedRef = {};
       this.pokeIdx = { c1: 0, c2: 0, d1: 0 };
       this.pokeTimers = {};
       this.state = {
@@ -66,25 +98,38 @@
     componentDidMount() {
       var self = this;
       window.addEventListener('popstate', function () { self.applyRoute(); });
+      // Warm up the arrival-screen pictures while the user is on the login form, so they don't pop in and stutter after login.
+      try { var tpl = document.getElementById('pp-template'); if (tpl) tpl.content.querySelectorAll('.arrive img').forEach(function (im) { var i = new Image(); i.src = im.getAttribute('src'); if (i.decode) i.decode().catch(function () {}); }); } catch (e) { /* decor only */ }
       var saved = storeGet();
       if (!saved) { this.setState({ booting: false }); return; }
       this.token = saved;
+      var cached = cacheGet();
+      // Reload with a cached session: show the app immediately, then confirm the token and refresh the data in the background.
+      if (cached) this.enter({ user: cached.user, token: saved }, { restore: true, cached: cached });
       this.api('GET', '/auth/me').then(function (r) {
-        if (r.status === 200) self.enter({ user: r.data, token: saved }, { restore: true });
-        else { self.token = null; storeSet(null); self.setState({ booting: false }); }
+        if (r.status === 200) {
+          if (cached) { self.setState({ me: r.data }); self.saveCache({ user: r.data }); }
+          else self.enter({ user: r.data, token: saved }, { restore: true });
+        } else if (r.status === 401 || !cached) {
+          if (cached) { self.resetSession(); self.toast('err', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'); }
+          else { self.token = null; storeSet(null); self.setState({ booting: false }); }
+        }
       });
     }
 
     /* ---------------- REST API client (/api) ---------------- */
-    api(method, path, body) {
+    api(method, path, body, timeoutMs) {
       var self = this;
-      self.setState(function (s) { return { busy: s.busy + 1 }; });
+      // Only re-render when the loading bar actually appears or disappears, not on every request.
+      if (++self.pending === 1) self.setState({ busy: 1 });
       var headers = {};
       if (this.token) headers.Authorization = 'Bearer ' + this.token;
       var payload;
       if (body instanceof FormData) payload = body;
       else if (body !== undefined && method !== 'GET' && method !== 'DELETE') { headers['Content-Type'] = 'application/json'; payload = JSON.stringify(body); }
-      return fetch('/api' + path, { method: method, headers: headers, body: payload })
+      var ctl = timeoutMs && window.AbortController ? new AbortController() : null;
+      var tm = ctl ? setTimeout(function () { ctl.abort(); }, timeoutMs) : null;
+      return fetch('/api' + path, { method: method, headers: headers, body: payload, signal: ctl ? ctl.signal : undefined })
         .then(function (res) {
           if (res.status === 204) return { status: 204 };
           return res.json().catch(function () { return {}; }).then(function (j) {
@@ -95,7 +140,7 @@
           });
         })
         .catch(function () { return { status: 0, error: 'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.', errors: {} }; })
-        .then(function (r) { self.setState(function (s) { return { busy: Math.max(0, s.busy - 1) }; }); return r; });
+        .then(function (r) { clearTimeout(tm); self.pending = Math.max(0, self.pending - 1); if (self.pending === 0) self.setState({ busy: 0 }); return r; });
     }
 
     /* ---------------- routing (hash URLs: #/pets/3/vaccinations …) ---------------- */
@@ -131,17 +176,36 @@
 
     /* ---------------- documents: fetch file bytes with the token ---------------- */
     docUrl(id) {
+      // Previews are fetched through the authorised download endpoint, at most 3 at a time,
+      // and retried (up to 3 tries) instead of leaving an empty card when a request fails.
       var self = this;
       if (this.files[id] || this.filePending[id]) return this.files[id] || null;
+      if ((this.fileTries[id] || 0) >= 3) return null;
       this.filePending[id] = true;
-      setTimeout(function () {
-        fetch('/api/documents/' + id + '/download?inline=1', { headers: { Authorization: 'Bearer ' + self.token } })
-          .then(function (res) { if (!res.ok) throw new Error(String(res.status)); return res.blob(); })
-          .then(function (b) { self.files[id] = URL.createObjectURL(b); self.forceUpdate(); })
-          .catch(function () { /* stays pending: the card shows without preview */ });
-      }, 0);
+      this.fileQueue.push(id);
+      setTimeout(function () { self.pumpFiles(); }, 0);
       return null;
     }
+    pumpFiles() {
+      var self = this;
+      while (this.fileActive < 3 && this.fileQueue.length) {
+        var id = this.fileQueue.shift();
+        if (!this.filePending[id] || !this.token) continue;
+        this.fileActive++;
+        (function (id) {
+          fetch('/api/documents/' + id + '/download?inline=1', { headers: { Authorization: 'Bearer ' + self.token } })
+            .then(function (res) { if (!res.ok) throw new Error(String(res.status)); return res.blob(); })
+            .then(function (b) { if (self.filePending[id]) { self.files[id] = URL.createObjectURL(b); delete self.filePending[id]; } })
+            .catch(function () {
+              self.fileTries[id] = (self.fileTries[id] || 0) + 1;
+              setTimeout(function () { delete self.filePending[id]; self.forceUpdate(); }, 1500 * self.fileTries[id]);
+            })
+            .then(function () { self.fileActive--; self.forceUpdate(); self.pumpFiles(); });
+        })(id);
+      }
+    }
+    fileFailed(id) { return (this.fileTries[id] || 0) >= 3 && !this.files[id]; }
+    retryFile(id) { delete this.fileTries[id]; delete this.filePending[id]; this.forceUpdate(); }
     dropFile(id) { if (this.files[id]) URL.revokeObjectURL(this.files[id]); delete this.files[id]; delete this.filePending[id]; }
 
     /* ---------------- the yard ---------------- */
@@ -178,19 +242,59 @@
     }
 
     enter(data, opts) {
-      var self = this, restore = opts && opts.restore;
+      var self = this, restore = opts && opts.restore, c = (opts && opts.cached) || {};
       this.token = data.token; storeSet(data.token);
-      this.setState({ booting: false, arriving: !restore, screen: 'app', page: 'dashboard', me: data.user, form: {}, errors: {}, formError: '', pets: [], health: [], vacc: [], docs: [], loaded: false, modal: null });
+      if (!restore) cacheSet({ user: data.user });
+      this.setState({ booting: false, arriving: !restore, screen: 'app', page: 'dashboard', me: data.user, form: {}, errors: {}, formError: '', pets: c.pets || [], health: c.health || [], vacc: c.vacc || [], docs: c.docs || [], loaded: !!c.pets, modal: null });
       clearTimeout(this.arriveTimer);
       if (!restore) {
-        this.arriveTimer = setTimeout(function () { self.setState({ arriving: false }); self.toast('ok', 'Xin chào, ' + data.user.name + '!'); }, 5000);
+        // The arrival screen stays up until BOTH the 3 s animation has played AND the dashboard is ready
+        // (data loaded, pictures decoded) underneath it — at most 30 s, and "Bỏ qua" always ends it.
+        this.arriveWait = { min: false, data: false };
+        this.arriveTimer = setTimeout(function () { self.arriveWait.min = true; self.endArrive(); }, 3000);
+        this.arriveCap = setTimeout(function () { self.endArrive(true); }, 30000);
         this.go('#/dashboard', true);
       } else {
         this.applyRoute();
       }
-      this.loadAll();
+      this.loadAll().then(function () { return self.preloadPictures(); }, function () {}).then(function () {
+        if (self.arriveWait) { self.arriveWait.data = true; self.endArrive(); }
+      });
+    }
+    endArrive(force) {
+      var w = this.arriveWait;
+      if (!w || !this.state.arriving) return;
+      if (!force && !(w.min && w.data)) return;
+      this.arriveWait = null; clearTimeout(this.arriveTimer); clearTimeout(this.arriveCap);
+      this.setState({ arriving: false });
+      this.toast('ok', 'Xin chào, ' + ((this.state.me || {}).name || '') + '!');
+    }
+    /** Download and decode pet photos / avatar while the arrival screen is still showing (max 4 s). */
+    preloadPictures() {
+      var s = this.state, urls = s.pets.map(function (p) { return p.photo; }).concat([s.me && s.me.avatar]).filter(Boolean);
+      var all = Promise.all(urls.map(function (u) {
+        var i = new Image(); i.src = u;
+        return (i.decode ? i.decode() : new Promise(function (ok) { i.onload = i.onerror = ok; })).catch(function () {});
+      }));
+      return Promise.race([all, new Promise(function (ok) { setTimeout(ok, 4000); })]);
     }
     loadAll() {
+      // One request for the whole dashboard; falls back to the per-pet endpoints if the server is older.
+      var self = this;
+      this.setState({ loadErr: false });
+      return this.api('GET', '/overview', undefined, 20000).then(function (r) {
+        if (r.status === 200) {
+          var o = r.data;
+          self.setState({ pets: o.pets, health: o.health_records, vacc: o.vaccinations, docs: o.documents, loaded: true });
+          self.saveCache();
+          return;
+        }
+        if (r.status === 404) return self.loadAllPerPet();
+        if (!self.state.loaded) self.setState({ loadErr: true }); // show "Thử lại" instead of loading forever
+        self.failed(r);
+      });
+    }
+    loadAllPerPet() {
       var self = this;
       return this.api('GET', '/pets').then(function (r) {
         if (r.status !== 200) { self.failed(r); return; }
@@ -201,9 +305,23 @@
           var h = [], v = [], d = [], bad = null;
           rs.forEach(function (x) { x.forEach(function (y) { if (y.status !== 200) bad = bad || y; }); h = h.concat(x[0].data || []); v = v.concat(x[1].data || []); d = d.concat(x[2].data || []); });
           self.setState({ health: h, vacc: v, docs: d, loaded: true });
-          if (bad) self.failed(bad);
+          if (bad) self.failed(bad); else self.saveCache();
         });
       });
+    }
+    componentDidUpdate() {
+      // Keep the reload cache in step with edits (add/edit/delete), at most once per second.
+      var s = this.state, self = this;
+      if (!s.loaded || s.screen !== 'app') return;
+      if (s.pets === this.cachedRef.p && s.health === this.cachedRef.h && s.vacc === this.cachedRef.v && s.docs === this.cachedRef.d && s.me === this.cachedRef.m) return;
+      this.cachedRef = { p: s.pets, h: s.health, v: s.vacc, d: s.docs, m: s.me };
+      clearTimeout(this.cacheTimer);
+      this.cacheTimer = setTimeout(function () { self.saveCache(); }, 1000);
+    }
+    saveCache(extra) {
+      if (!this.token) return;
+      var s = this.state;
+      cacheSet(Object.assign({ user: s.me, pets: s.pets, health: s.health, vacc: s.vacc, docs: s.docs }, extra || {}));
     }
     doLogin() {
       var self = this, f = this.state.form, body = { email: (f.email || '').trim(), password: f.password || '' };
@@ -211,7 +329,7 @@
       this.setState({ saving: true, formError: '' });
       this.api('POST', '/auth/login', body).then(function (r) {
         self.setState({ saving: false });
-        if (r.status === 200) self.enter(r.data); else self.setState({ formError: r.error, errors: r.errors || {} });
+        if (r.status === 200) { ppTrack('login', { method: 'email' }); self.enter(r.data); } else self.setState({ formError: r.error, errors: r.errors || {} });
       });
     }
     doRegister() {
@@ -220,15 +338,15 @@
       this.setState({ saving: true, formError: '' });
       this.api('POST', '/auth/register', { name: body.name, email: body.email, password: body.password }).then(function (r) {
         self.setState({ saving: false });
-        if (r.status === 201) self.enter(r.data); else self.setState({ formError: r.error, errors: r.errors || {} });
+        if (r.status === 201) { ppTrack('sign_up', { method: 'email' }); self.enter(r.data); } else self.setState({ formError: r.error, errors: r.errors || {} });
       });
     }
     resetSession() {
       var self = this;
       this.token = null; storeSet(null);
       Object.keys(this.files).forEach(function (id) { self.dropFile(id); });
-      this.filePending = {};
-      clearTimeout(this.arriveTimer);
+      this.filePending = {}; this.fileQueue = []; this.fileTries = {};
+      clearTimeout(this.arriveTimer); clearTimeout(this.arriveCap); this.arriveWait = null;
       if (location.hash) history.replaceState(null, '', location.pathname);
       this.setState({ screen: 'login', page: 'dashboard', me: null, pets: [], health: [], vacc: [], docs: [], loaded: false, modal: null, form: {}, errors: {}, formError: '', petQuery: '', petSpecies: '', searchQuery: '', tabQuery: '', arriving: false, booting: false });
     }
@@ -249,7 +367,7 @@
       var self = this, file = e.target.files && e.target.files[0]; if (!file) return;
       var err = VAL.image(file);
       if (err) { this.setState({ photoErr: err }); e.target.value = ''; return; }
-      var rd = new FileReader(); rd.onload = function () { self.savePetPhoto(rd.result, 'Đã đổi ảnh của bé.'); e.target.value = ''; }; rd.readAsDataURL(file);
+      ppShrink(file, function (data) { self.savePetPhoto(data, 'Đã đổi ảnh của bé.'); e.target.value = ''; });
     }
 
     openModal(type, id) {
@@ -272,7 +390,7 @@
       var self = this, file = e.target.files && e.target.files[0]; if (!file) return;
       var err = VAL.image(file);
       if (err) { this.setErr(key, err); e.target.value = ''; return; }
-      var rd = new FileReader(); rd.onload = function () { self.setField(key, rd.result); }; rd.readAsDataURL(file);
+      ppShrink(file, function (data) { self.setField(key, data); });
     }
     pickDoc(e) {
       var file = e.target.files && e.target.files[0];
@@ -284,12 +402,12 @@
     }
 
     save(validator, body, method, path, done, payload) {
-      var self = this, errs = validator(body);
-      if (ppHasErr(errs)) { this.setState({ errors: errs }); this.toast('err', 'Vui lòng kiểm tra lại các ô được đánh dấu.'); return; }
+      var self = this, errs = validator(body), form = this.state.modal || 'form';
+      if (ppHasErr(errs)) { this.setState({ errors: errs }); this.toast('err', 'Vui lòng kiểm tra lại các ô được đánh dấu.'); ppTrack('form_invalid', { form: form }); return; }
       this.setState({ saving: true });
       this.api(method, path, payload || body).then(function (r) {
         self.setState({ saving: false });
-        if (r.status === 200 || r.status === 201) done(r.data, r.status); else self.failed(r);
+        if (r.status === 200 || r.status === 201) { ppTrack((r.status === 201 ? 'create_' : 'update_') + form); done(r.data, r.status); } else self.failed(r);
       });
     }
     upsert(key, item) { this.setState(function (s) { var arr = s[key], found = false; var next = arr.map(function (x) { if (x.id === item.id) { found = true; return item; } return x; }); if (!found) next = next.concat([item]); var o = {}; o[key] = next; return o; }); }
@@ -402,7 +520,8 @@
         pokeSleeper:function(){ self.pokeSleeper(); },
         quickPhoto:function(e){ self.quickPhoto(e); },
         removePhoto:function(){ self.savePetPhoto('','Đã gỡ ảnh, bé dùng hình minh hoạ.'); },
-        skipArrive:function(){ clearTimeout(self.arriveTimer); self.setState({arriving:false}); self.toast('ok','Xin chào, '+((self.state.me||{}).name||'')+'!'); }
+        reload:function(){ self.loadAll(); },
+        skipArrive:function(){ self.endArrive(true); }
       };
       return this._h;
     }
@@ -473,7 +592,7 @@
             view:function(){ self.openView('vacc',v.id); }, edit:function(){ self.openModal('vacc',v.id); }, del:function(){ self.askDelete('vacc',v.id); }}); });
         dl=s.docs.filter(function(d){ var t=s.docType; return d.pet_id===cp.id && (!t || (t==='img'?d.file_type!=='pdf':d.file_type==='pdf')) && ppMatch(q,[d.file_name,d.description]); })
           .sort(function(a,b){ return a.uploaded_at<b.uploaded_at?1:-1; })
-          .map(function(d){ var url=s.tab==='docs'?self.docUrl(d.id):null; return Object.assign({},d,{url:url, hasUrl:!!url, showImg:d.file_type!=='pdf' && !!url, isPdf:d.file_type==='pdf', typeLabel:d.file_type.toUpperCase(), dateText:ppFmt(d.uploaded_at), hasDesc:!!d.description,
+          .map(function(d){ var url=s.tab==='docs'?self.docUrl(d.id):null; var bad=!url && self.fileFailed(d.id); return Object.assign({},d,{url:url, hasUrl:!!url, showImg:d.file_type!=='pdf' && !!url, imgWait:d.file_type!=='pdf' && !url && !bad, imgBad:d.file_type!=='pdf' && bad, retry:function(){ self.retryFile(d.id); }, isPdf:d.file_type==='pdf', typeLabel:d.file_type.toUpperCase(), dateText:ppFmt(d.uploaded_at), hasDesc:!!d.description,
             view:function(){ self.openView('doc',d.id); }, del:function(){ self.askDelete('doc',d.id); }}); });
       }
       var tabFlag={health:s.tab==='health', vacc:s.tab==='vacc', docs:s.tab==='docs'};
@@ -512,11 +631,11 @@
         H:H, f:f, err:err, noErr:noErr, cls:cls, formError:s.formError, busy:s.busy>0, saving:s.saving,
         loginLabel:s.saving?'Đang đăng nhập…':'Đăng nhập', registerLabel:s.saving?'Đang tạo tài khoản…':'Tạo tài khoản',
         saveLabel:s.saving?'Đang lưu…':(md.doc?'Tải lên':'Lưu'), deleteLabel:s.saving?'Đang xóa…':'Xóa',
-        scr:{auth:s.screen!=='app', login:s.screen==='login', register:s.screen==='register', app:s.screen==='app'},
+        scr:{auth:s.screen!=='app' && !s.booting, login:s.screen==='login', register:s.screen==='register', app:s.screen==='app'},
         pg:{dashboard:s.page==='dashboard', pets:s.page==='pets', pet:s.page==='pet' && !!cp, search:s.page==='search', account:s.page==='account'},
         nav:{dashboard:s.page==='dashboard'?'tnav on':'tnav', pets:(s.page==='pets'||s.page==='pet')?'tnav on':'tnav', search:s.page==='search'?'tnav on':'tnav', account:s.page==='account'?'tnav on':'tnav'},
         me:me, meInitials:meInitials, meHasAvatar:!!me.avatar, meNoAvatar:!me.avatar, meSince:ppFmt(me.created_at),
-        greeting:greet+', '+first+'!', loading:!s.loaded, loaded:s.loaded,
+        greeting:greet+', '+first+'!', loading:!s.loaded && !s.loadErr, loadErr:!s.loaded && !!s.loadErr, loaded:s.loaded,
         summary:s.pets.length+' bé · '+s.health.length+' lần khám · '+s.vacc.length+' mũi tiêm · '+s.docs.length+' tài liệu',
         tally:{pets:s.pets.length, health:s.health.length, vacc:s.vacc.length, docs:s.docs.length},
         pv:pv, watchGroups:groups, noWatch:watch.length===0, acts:acts, noActs:acts.length===0,

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giới thiệu — PawPass, sổ hộ chiếu thú cưng</title>
+<meta name="description" content="PawPass giúp chủ nuôi lưu hồ sơ, lần khám, mũi tiêm và giấy tờ của từng bé thú cưng ở một nơi, mở được trên máy tính và điện thoại.">
+<link rel="icon" href="/assets/0aac20424488808bb687fe0bf895c0a7.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap"></noscript>
+<link rel="stylesheet" href="/css/tailwind.css">
+</head>
+<body class="min-h-screen bg-cream font-body font-semibold text-ink antialiased">
+
+<!-- Thanh điều hướng chung của các trang giới thiệu -->
+<header class="sticky top-0 z-30 border-b-2.5 border-ink bg-[#9C6233]">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3" aria-label="Điều hướng trang">
+    <a href="/" class="flex items-center gap-2 font-display text-2xl font-extrabold text-paper">
+      <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border-2.5 border-ink bg-orange shadow-chunky-sm" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3A2E28"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"/><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"/><path d="M12 11c-3.5 0-6 3.6-6 6.2 0 2 1.6 2.8 3.2 2.8 1.2 0 1.9-.6 2.8-.6s1.6.6 2.8.6c1.6 0 3.2-.8 3.2-2.8C18 14.6 15.5 11 12 11z"/></svg>
+      </span>
+      PawPass
+    </a>
+    <button type="button" data-menu-toggle aria-controls="site-menu" aria-expanded="false" class="pp-btn bg-paper px-3 md:hidden" aria-label="Mở menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <ul id="site-menu" class="absolute left-0 right-0 top-full hidden flex-col gap-2 border-b-2.5 border-ink bg-[#9C6233] p-4 md:static md:flex md:flex-row md:items-center md:border-0 md:p-0">
+      <li><a href="/gioi-thieu.html" aria-current="page" class="pp-btn w-full bg-orange md:w-auto">Giới thiệu</a></li>
+      <li><a href="/lien-he.html" class="pp-btn w-full bg-paper md:w-auto">Liên hệ</a></li>
+      <li><a href="/" class="pp-btn w-full bg-mint md:w-auto">Mở ứng dụng</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <!-- Phần mở đầu -->
+  <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 md:grid-cols-2 md:py-16">
+    <div>
+      <p class="font-hand text-2xl text-orange-text">xin chào, người nuôi thú cưng!</p>
+      <h1 class="mt-1 font-display text-4xl font-extrabold leading-tight md:text-5xl">Mỗi bé có một cuốn hộ chiếu riêng.</h1>
+      <p class="mt-4 max-w-prose text-lg text-muted">
+        PawPass gom hồ sơ, các lần khám, mũi tiêm và giấy tờ của từng bé vào một chỗ.
+        Mở được trên máy tính lẫn điện thoại, nên đang ở phòng khám hay khách sạn thú cưng cũng tra được ngay.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/" class="pp-btn bg-orange">Bắt đầu miễn phí</a>
+        <a href="#cach-dung" class="pp-btn bg-paper">Xem cách dùng</a>
+      </div>
+    </div>
+    <div class="pp-card relative mx-auto w-full max-w-md overflow-hidden p-6">
+      <p class="font-display text-sm font-extrabold uppercase tracking-[0.2em] text-orange-text">Hộ chiếu thú cưng</p>
+      <div class="mt-4 flex items-center gap-4">
+        <img src="/assets/0aac20424488808bb687fe0bf895c0a7.webp" alt="Minh họa mèo Mochi" width="96" height="70" class="h-auto w-24">
+        <div>
+          <p class="font-display text-2xl font-extrabold">Mochi</p>
+          <p class="text-muted">Mèo tam thể · Cái · 2 tuổi</p>
+        </div>
+      </div>
+      <ul class="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
+        <li class="rounded-xl border-2.5 border-ink bg-mint/40 p-2"><b class="block font-display text-xl">3</b>lần khám</li>
+        <li class="rounded-xl border-2.5 border-ink bg-sky/40 p-2"><b class="block font-display text-xl">4</b>mũi tiêm</li>
+        <li class="rounded-xl border-2.5 border-ink bg-rose/50 p-2"><b class="block font-display text-xl">2</b>giấy tờ</li>
+      </ul>
+      <span class="absolute right-3 top-3 rotate-12 rounded-full border-2.5 border-[#2E5A86] px-3 py-1 font-display text-xs font-extrabold text-[#2E5A86]">ĐÃ TIÊM · MŨI 2</span>
+    </div>
+  </section>
+
+  <!-- Vấn đề -->
+  <section class="border-y-2.5 border-ink bg-paper">
+    <div class="mx-auto max-w-6xl px-4 py-12">
+      <h2 class="font-display text-3xl font-extrabold">Vì sao cần PawPass?</h2>
+      <div class="mt-6 grid gap-5 md:grid-cols-3">
+        <article class="pp-card bg-cream p-5">
+          <p class="text-3xl" aria-hidden="true">📒</p>
+          <h3 class="mt-2 font-display text-xl font-bold">Sổ tiêm hay để quên</h3>
+          <p class="mt-1 text-muted">Cần chứng minh bé đã tiêm phòng dại mà sổ giấy lại nằm ở nhà.</p>
+        </article>
+        <article class="pp-card bg-cream p-5">
+          <p class="text-3xl" aria-hidden="true">📷</p>
+          <h3 class="mt-2 font-display text-xl font-bold">Giấy tờ lẫn trong ảnh chụp</h3>
+          <p class="mt-1 text-muted">Đơn thuốc, kết quả xét nghiệm trôi giữa hàng nghìn ảnh trong điện thoại.</p>
+        </article>
+        <article class="pp-card bg-cream p-5">
+          <p class="text-3xl" aria-hidden="true">🐾</p>
+          <h3 class="mt-2 font-display text-xl font-bold">Nuôi nhiều bé dễ nhầm</h3>
+          <p class="mt-1 text-muted">Bé nào tiêm mũi nào, khám lần cuối khi nào — nhớ không nổi.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tính năng -->
+  <section class="mx-auto max-w-6xl px-4 py-12" aria-labelledby="tinh-nang">
+    <h2 id="tinh-nang" class="font-display text-3xl font-extrabold">PawPass làm được gì?</h2>
+    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <article class="pp-card p-5">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2.5 border-ink bg-orange" aria-hidden="true">🐶</span>
+        <h3 class="mt-3 font-display text-lg font-bold">Hồ sơ từng bé</h3>
+        <p class="mt-1 text-sm text-muted">Ảnh, loài, giống, giới tính, ngày sinh, cân nặng, ghi chú.</p>
+      </article>
+      <article class="pp-card p-5">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2.5 border-ink bg-mint" aria-hidden="true">🩺</span>
+        <h3 class="mt-3 font-display text-lg font-bold">Lịch sử khám</h3>
+        <p class="mt-1 text-sm text-muted">Lý do, chẩn đoán, điều trị, thuốc — xếp theo dòng thời gian.</p>
+      </article>
+      <article class="pp-card p-5">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2.5 border-ink bg-sky" aria-hidden="true">💉</span>
+        <h3 class="mt-3 font-display text-lg font-bold">Tiêm phòng</h3>
+        <p class="mt-1 text-sm text-muted">Mỗi mũi tiêm là một con dấu trong hộ chiếu của bé.</p>
+      </article>
+      <article class="pp-card p-5">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2.5 border-ink bg-rose" aria-hidden="true">📄</span>
+        <h3 class="mt-3 font-display text-lg font-bold">Giấy tờ &amp; tìm kiếm</h3>
+        <p class="mt-1 text-sm text-muted">Lưu JPG, PNG, PDF; gõ một từ là tìm ra ngay.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Cách dùng -->
+  <section id="cach-dung" class="border-y-2.5 border-ink bg-orange/30">
+    <div class="mx-auto max-w-6xl px-4 py-12">
+      <h2 class="font-display text-3xl font-extrabold">Bắt đầu trong 3 bước</h2>
+      <ol class="mt-6 grid gap-5 md:grid-cols-3">
+        <li class="pp-card p-5"><span class="font-display text-4xl font-extrabold text-orange-text">1</span><p class="mt-1 font-bold">Đăng ký bằng email</p><p class="text-sm text-muted">Mật khẩu được mã hóa, chỉ bạn xem được dữ liệu của mình.</p></li>
+        <li class="pp-card p-5"><span class="font-display text-4xl font-extrabold text-orange-text">2</span><p class="mt-1 font-bold">Tạo hộ chiếu cho từng bé</p><p class="text-sm text-muted">Thêm ảnh và thông tin cơ bản, nuôi bao nhiêu bé cũng được.</p></li>
+        <li class="pp-card p-5"><span class="font-display text-4xl font-extrabold text-orange-text">3</span><p class="mt-1 font-bold">Ghi lại mỗi lần khám, tiêm</p><p class="text-sm text-muted">Chụp và tải giấy tờ lên ngay tại phòng khám.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Nhóm thực hiện -->
+  <section class="mx-auto max-w-6xl px-4 py-12" aria-labelledby="nhom">
+    <h2 id="nhom" class="font-display text-3xl font-extrabold">Nhóm thực hiện</h2>
+    <p class="mt-2 text-muted">Đồ án cuối kỳ môn Thiết kế và Phát triển Web.</p>
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <li class="pp-card p-4 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2.5 border-ink bg-orange font-display text-xl font-extrabold">HT</span><p class="mt-2 font-bold">Hữu Triết</p><p class="text-sm text-muted">Giao diện &amp; hình ảnh</p></li>
+      <li class="pp-card p-4 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2.5 border-ink bg-mint font-display text-xl font-extrabold">DH</span><p class="mt-2 font-bold">Duy Huy</p><p class="text-sm text-muted">CSS, Tailwind, deploy &amp; test giao diện</p></li>
+      <li class="pp-card p-4 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2.5 border-ink bg-sky font-display text-xl font-extrabold">TD</span><p class="mt-2 font-bold">Thế Dũng</p><p class="text-sm text-muted">Logic frontend &amp; theo dõi</p></li>
+      <li class="pp-card p-4 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2.5 border-ink bg-rose font-display text-xl font-extrabold">TĐ</span><p class="mt-2 font-bold">Thành Đạt</p><p class="text-sm text-muted">Backend API &amp; bảo mật</p></li>
+      <li class="pp-card p-4 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2.5 border-ink bg-paper font-display text-xl font-extrabold">DQ</span><p class="mt-2 font-bold">Duy Quang</p><p class="text-sm text-muted">Database &amp; kiểm thử</p></li>
+    </ul>
+    <p class="mt-8 text-sm text-muted">Công nghệ: HTML, CSS, Tailwind CSS, JavaScript · Node.js · PostgreSQL (Neon) · Vercel.</p>
+  </section>
+</main>
+
+<footer class="border-t-2.5 border-ink bg-paper">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted sm:flex-row">
+    <p>© 2026 PawPass · Sổ hộ chiếu thú cưng</p>
+    <p class="flex gap-4"><a class="underline hover:text-orange-text" href="/gioi-thieu.html">Giới thiệu</a><a class="underline hover:text-orange-text" href="/lien-he.html">Liên hệ</a><a class="underline hover:text-orange-text" href="/">Ứng dụng</a></p>
+  </div>
+</footer>
+
+<script defer src="/js/site.js"></script>
+<script defer src="/js/monitoring.js"></script>
+</body>
+</html>

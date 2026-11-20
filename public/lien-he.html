@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liên hệ — PawPass, sổ hộ chiếu thú cưng</title>
+<meta name="description" content="Gửi góp ý, báo lỗi hoặc câu hỏi cho nhóm phát triển PawPass, và xem các câu hỏi thường gặp.">
+<link rel="icon" href="/assets/0aac20424488808bb687fe0bf895c0a7.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@500;600;700;800&amp;family=Patrick+Hand&amp;display=swap"></noscript>
+<link rel="stylesheet" href="/css/tailwind.css">
+</head>
+<body class="min-h-screen bg-cream font-body font-semibold text-ink antialiased">
+
+<header class="sticky top-0 z-30 border-b-2.5 border-ink bg-[#9C6233]">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3" aria-label="Điều hướng trang">
+    <a href="/" class="flex items-center gap-2 font-display text-2xl font-extrabold text-paper">
+      <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border-2.5 border-ink bg-orange shadow-chunky-sm" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#3A2E28"><ellipse cx="5.5" cy="10" rx="2.2" ry="2.8"/><ellipse cx="9.5" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="18.5" cy="10" rx="2.2" ry="2.8"/><path d="M12 11c-3.5 0-6 3.6-6 6.2 0 2 1.6 2.8 3.2 2.8 1.2 0 1.9-.6 2.8-.6s1.6.6 2.8.6c1.6 0 3.2-.8 3.2-2.8C18 14.6 15.5 11 12 11z"/></svg>
+      </span>
+      PawPass
+    </a>
+    <button type="button" data-menu-toggle aria-controls="site-menu" aria-expanded="false" class="pp-btn bg-paper px-3 md:hidden" aria-label="Mở menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <ul id="site-menu" class="absolute left-0 right-0 top-full hidden flex-col gap-2 border-b-2.5 border-ink bg-[#9C6233] p-4 md:static md:flex md:flex-row md:items-center md:border-0 md:p-0">
+      <li><a href="/gioi-thieu.html" class="pp-btn w-full bg-paper md:w-auto">Giới thiệu</a></li>
+      <li><a href="/lien-he.html" aria-current="page" class="pp-btn w-full bg-orange md:w-auto">Liên hệ</a></li>
+      <li><a href="/" class="pp-btn w-full bg-mint md:w-auto">Mở ứng dụng</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="mx-auto max-w-6xl px-4 py-12">
+  <p class="font-hand text-2xl text-orange-text">có điều gì muốn nói?</p>
+  <h1 class="font-display text-4xl font-extrabold md:text-5xl">Liên hệ nhóm PawPass</h1>
+  <p class="mt-3 max-w-prose text-lg text-muted">Góp ý giao diện, báo lỗi hay đề xuất tính năng. Lời nhắn được gửi thành một <b>Issue công khai</b> trên GitHub của nhóm, nhóm trả lời ngay tại đó.</p>
+
+  <div class="mt-10 grid gap-8 lg:grid-cols-5">
+    <!-- Form liên hệ: kiểm tra dữ liệu bằng JavaScript (js/site.js), rồi mở trang tạo Issue trên GitHub đã điền sẵn nội dung.
+         Không hỏi email: Issue là công khai, nên không thu thập thông tin riêng tư. -->
+    <section class="pp-card p-6 lg:col-span-3" aria-labelledby="form-title">
+      <h2 id="form-title" class="font-display text-2xl font-extrabold">Gửi lời nhắn</h2>
+      <form id="contact-form" class="mt-5 space-y-5" novalidate>
+        <div>
+          <label for="ct-name" class="mb-1 block font-bold">Họ tên <span class="text-red-700">*</span></label>
+          <input id="ct-name" name="name" type="text" autocomplete="name" maxlength="60" class="pp-input" placeholder="Nguyễn Văn A" aria-describedby="ct-name-err">
+          <p id="ct-name-err" class="mt-1 hidden text-sm font-bold text-red-700" role="alert"></p>
+        </div>
+        <fieldset>
+          <legend class="mb-2 font-bold">Chủ đề <span class="text-red-700">*</span></legend>
+          <div class="flex flex-wrap gap-2" role="radiogroup">
+            <label class="cursor-pointer"><input type="radio" name="topic" value="Góp ý" class="peer sr-only" checked><span class="pp-btn bg-paper text-sm peer-checked:bg-orange peer-focus-visible:ring-4 peer-focus-visible:ring-orange/50">Góp ý</span></label>
+            <label class="cursor-pointer"><input type="radio" name="topic" value="Báo lỗi" class="peer sr-only"><span class="pp-btn bg-paper text-sm peer-checked:bg-orange peer-focus-visible:ring-4 peer-focus-visible:ring-orange/50">Báo lỗi</span></label>
+            <label class="cursor-pointer"><input type="radio" name="topic" value="Đề xuất tính năng" class="peer sr-only"><span class="pp-btn bg-paper text-sm peer-checked:bg-orange peer-focus-visible:ring-4 peer-focus-visible:ring-orange/50">Đề xuất tính năng</span></label>
+          </div>
+        </fieldset>
+        <div>
+          <label for="ct-msg" class="mb-1 block font-bold">Nội dung <span class="text-red-700">*</span></label>
+          <textarea id="ct-msg" name="message" rows="5" maxlength="1000" class="pp-input resize-y" placeholder="Mô tả ngắn gọn, nếu là lỗi thì ghi bạn đã bấm gì và thấy gì." aria-describedby="ct-msg-err ct-msg-count"></textarea>
+          <div class="mt-1 flex justify-between text-sm">
+            <p id="ct-msg-err" class="hidden font-bold text-red-700" role="alert"></p>
+            <p id="ct-msg-count" class="ml-auto text-muted" aria-live="polite">0 / 1000</p>
+          </div>
+        </div>
+        <p class="text-sm text-muted">Lời nhắn sẽ hiển thị công khai — đừng ghi số điện thoại, mật khẩu hay thông tin riêng tư.</p>
+        <button type="submit" class="pp-btn w-full bg-orange sm:w-auto">Gửi lời nhắn qua GitHub</button>
+        <p id="ct-done" class="hidden rounded-xl border-2.5 border-ink bg-mint/50 p-3" role="status"></p>
+      </form>
+    </section>
+
+    <!-- Thông tin nhóm và câu hỏi thường gặp -->
+    <aside class="space-y-6 lg:col-span-2">
+      <section class="pp-card p-6" aria-labelledby="info-title">
+        <h2 id="info-title" class="font-display text-2xl font-extrabold">Thông tin</h2>
+        <ul class="mt-3 space-y-2">
+          <li><span class="text-muted">Mã nguồn:</span> <a class="font-bold text-orange-text underline" href="https://github.com/iceruychi-netizen/PawPass-Hosothucung" rel="noopener" target="_blank">GitHub — PawPass-Hosothucung</a></li>
+          <li><span class="text-muted">Báo lỗi:</span> <a class="font-bold text-orange-text underline" href="https://github.com/iceruychi-netizen/PawPass-Hosothucung/issues" rel="noopener" target="_blank">GitHub Issues</a></li>
+          <li><span class="text-muted">Môn học:</span> Thiết kế và Phát triển Web</li>
+        </ul>
+      </section>
+
+      <section class="pp-card p-6" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="font-display text-2xl font-extrabold">Câu hỏi thường gặp</h2>
+        <div class="mt-3 divide-y-2 divide-dashed divide-ink/30" data-accordion>
+          <div class="py-2">
+            <button type="button" class="flex w-full items-center justify-between gap-3 py-2 text-left font-bold" aria-expanded="false" aria-controls="faq-1">PawPass có miễn phí không?<span aria-hidden="true" class="text-xl transition-transform">+</span></button>
+            <p id="faq-1" class="hidden pb-2 text-muted">Có. Bạn chỉ cần đăng ký bằng email là dùng được ngay.</p>
+          </div>
+          <div class="py-2">
+            <button type="button" class="flex w-full items-center justify-between gap-3 py-2 text-left font-bold" aria-expanded="false" aria-controls="faq-2">Người khác có xem được hồ sơ của bé nhà tôi không?<span aria-hidden="true" class="text-xl transition-transform">+</span></button>
+            <p id="faq-2" class="hidden pb-2 text-muted">Không. Máy chủ kiểm tra chủ sở hữu ở mọi yêu cầu; người khác mở đường link cũng bị chặn.</p>
+          </div>
+          <div class="py-2">
+            <button type="button" class="flex w-full items-center justify-between gap-3 py-2 text-left font-bold" aria-expanded="false" aria-controls="faq-3">Tải lên được loại tệp nào?<span aria-hidden="true" class="text-xl transition-transform">+</span></button>
+            <p id="faq-3" class="hidden pb-2 text-muted">Ảnh JPG, PNG và tệp PDF, tối đa 4 MB mỗi tệp. Ảnh đại diện của bé tối đa 2 MB.</p>
+          </div>
+          <div class="py-2">
+            <button type="button" class="flex w-full items-center justify-between gap-3 py-2 text-left font-bold" aria-expanded="false" aria-controls="faq-4">Có đặt lịch khám với bác sĩ được không?<span aria-hidden="true" class="text-xl transition-transform">+</span></button>
+            <p id="faq-4" class="hidden pb-2 text-muted">Chưa. PawPass hiện chỉ là sổ hồ sơ cá nhân; đặt lịch và kết nối phòng khám nằm ngoài phạm vi phiên bản này.</p>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer class="border-t-2.5 border-ink bg-paper">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted sm:flex-row">
+    <p>© 2026 PawPass · Sổ hộ chiếu thú cưng</p>
+    <p class="flex gap-4"><a class="underline hover:text-orange-text" href="/gioi-thieu.html">Giới thiệu</a><a class="underline hover:text-orange-text" href="/lien-he.html">Liên hệ</a><a class="underline hover:text-orange-text" href="/">Ứng dụng</a></p>
+  </div>
+</footer>
+
+<script defer src="/js/validators.js"></script>
+<script defer src="/js/site.js"></script>
+<script defer src="/js/monitoring.js"></script>
+</body>
+</html>

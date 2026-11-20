@@ -7,6 +7,7 @@
 const db = require('./db');
 const storage = require('./storage');
 const { hashPassword, verifyPassword, signToken, verifyToken, assertConfigured } = require('./security');
+const monitor = require('./monitor');
 const { HttpError, fail, invalid, send, readJson, readMultipart, createRouter } = require('./http');
 const VAL = require('../public/js/validators');
 
@@ -52,12 +53,25 @@ async function resolveImage(value, current, keyPrefix, field) {
   return { value: url, replaced: current || null };
 }
 
+/** Ownership check and the list query run at the same time (one database round trip instead of two);
+ *  the rows are only returned after ownership is confirmed. */
+async function ownedList(id, uid, sql) {
+  const [pet, rows] = await Promise.all([ownedPet(id, uid).catch((e) => e), db.query(sql, [id]).catch((e) => e)]);
+  if (pet instanceof Error) throw pet;
+  if (rows instanceof Error) throw rows;
+  return rows;
+}
+
 async function ownedPet(id, uid) {
   const pet = await db.one('SELECT * FROM pets WHERE id = $1', [id]);
   if (!pet) throw fail(404, 'Không tìm thấy thú cưng.');
   if (pet.user_id !== uid) throw fail(403, 'Bạn không có quyền truy cập thú cưng này.');
   return pet;
 }
+
+/* ---------- monitoring config (public) ---------- */
+// Mã Google Analytics và DSN Sentry cho trình duyệt, lấy từ biến môi trường để không phải ghi cứng vào mã nguồn.
+r('GET', '/config', async () => ({ data: monitor.publicConfig() }), { public: true });
 
 /* ---------- auth ---------- */
 r('POST', '/auth/register', async ({ body }) => {
@@ -176,8 +190,7 @@ Object.keys(RECORDS).forEach((seg) => {
   const T = RECORDS[seg];
   const cols = T.fields.join(', ');
   r('GET', '/pets/:id/' + seg, async ({ user, params }) => {
-    const pet = await ownedPet(params.id, user.id);
-    return { data: await db.query(`SELECT * FROM ${T.table} WHERE pet_id = $1 ORDER BY ${T.order}`, [pet.id]) };
+    return { data: await ownedList(params.id, user.id, `SELECT * FROM ${T.table} WHERE pet_id = $1 ORDER BY ${T.order}`) };
   });
   r('POST', '/pets/:id/' + seg, async ({ user, params, body }) => {
     const pet = await ownedPet(params.id, user.id);
@@ -206,8 +219,21 @@ const DOCS = { table: 'documents', notFound: 'Không tìm thấy tài liệu.' }
 const docPublic = (d) => ({ id: d.id, pet_id: d.pet_id, file_name: d.file_name, file_type: d.file_type, file_path: d.file_path, description: d.description || '', uploaded_at: d.uploaded_at });
 
 r('GET', '/pets/:id/documents', async ({ user, params }) => {
-  const pet = await ownedPet(params.id, user.id);
-  return { data: (await db.query('SELECT * FROM documents WHERE pet_id = $1 ORDER BY uploaded_at DESC, id DESC', [pet.id])).map(docPublic) };
+  return { data: (await ownedList(params.id, user.id, 'SELECT * FROM documents WHERE pet_id = $1 ORDER BY uploaded_at DESC, id DESC')).map(docPublic) };
+});
+
+/* Dashboard in one request: every pet of the user with all their health records, vaccinations and documents.
+ * Same data and ordering as GET /pets + GET /pets/:id/{health-records,vaccinations,documents},
+ * but one HTTP request and 4 parallel queries instead of 1 + 3 per pet. */
+r('GET', '/overview', async ({ user }) => {
+  const own = 'JOIN pets p ON p.id = x.pet_id WHERE p.user_id = $1 ORDER BY p.created_at, p.id, ';
+  const [pets, health, vaccinations, documents] = await Promise.all([
+    db.query('SELECT * FROM pets WHERE user_id = $1 ORDER BY created_at, id', [user.id]),
+    db.query('SELECT x.* FROM health_records x ' + own + 'x.examination_date DESC, x.id DESC', [user.id]),
+    db.query('SELECT x.* FROM vaccinations x ' + own + 'x.vaccination_date DESC, x.id DESC', [user.id]),
+    db.query('SELECT x.* FROM documents x ' + own + 'x.uploaded_at DESC, x.id DESC', [user.id])
+  ]);
+  return { data: { pets, health_records: health, vaccinations, documents: documents.map(docPublic) } };
 });
 
 r('POST', '/pets/:id/documents', async ({ user, params, req }) => {
@@ -245,7 +271,7 @@ r('GET', '/documents/:id/download', async ({ user, params, query }) => {
       'Content-Type': storage.MIME[doc.file_type] || 'application/octet-stream',
       'Content-Length': buf.length,
       'Content-Disposition': `${disposition}; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(doc.file_name)}`,
-      'Cache-Control': 'private, no-store',
+      'Cache-Control': 'private, max-age=3600', // a document's file never changes; lets the browser reuse previews for an hour
       'X-Content-Type-Options': 'nosniff',
       'Content-Security-Policy': "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
     }
@@ -287,6 +313,7 @@ async function handle(req, res) {
     send(res, out.status || 200, out.status === 204 ? undefined : out.data);
   } catch (err) {
     if (err instanceof HttpError) {
+      if (err.status >= 500) await monitor.captureException(err, { method: req.method, path, status: err.status });
       const payload = { error: err.message };
       if (err.errors) payload.errors = err.errors;
       send(res, err.status, payload);
@@ -294,6 +321,7 @@ async function handle(req, res) {
     }
     if (err && err.code === '23505') { send(res, 409, { error: EMAIL_USED, errors: { email: EMAIL_USED } }); return; }
     console.error('[api]', req.method, path, (err && err.code) || '', err);
+    await monitor.captureException(err, { method: req.method, path, status: 500 });
     let message = 'Lỗi máy chủ. Vui lòng thử lại.';
     if (err && err.code === 'PAWPASS_NO_DB_URL') message = 'Máy chủ chưa được cấu hình cơ sở dữ liệu (thiếu DATABASE_URL).';
     else if (err && err.code === 'PAWPASS_NO_JWT') message = 'Máy chủ chưa được cấu hình JWT_SECRET.';
